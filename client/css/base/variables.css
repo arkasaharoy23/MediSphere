@@ -1,0 +1,71 @@
+:root {
+  --color-navy: #102A43;
+  --color-navy-dark: #0B1F33;
+
+  --color-bg: #F7FAFC;
+  --color-bg-raised: #FFFFFF;
+
+  --color-ink: #172B4D;
+  --color-ink-soft: #627D98;
+  --color-line: #D9E2EC;
+
+  --color-teal: #0F766E;
+  --color-teal-dark: #0B5C56;
+  --color-teal-tint: #E4F3F1;
+
+  --color-coral: #F97360;
+  --color-coral-dark: #E2503B;
+  --color-coral-tint: #FFF0ED;
+
+  --color-on-navy: #F7FAFC;
+  --color-on-navy-soft: #A9BCCF;
+  --color-on-navy-line: #26405C;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 42, 67, 0.08);
+  --shadow-md: 0 8px 24px rgba(16, 42, 67, 0.1);
+  --shadow-lg: 0 20px 48px rgba(16, 42, 67, 0.16);
+
+  --container-max: 1200px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="dark"] {
+  --color-bg: #0B1F33;
+  --color-bg-raised: #102A43;
+
+  --color-ink: #F7FAFC;
+  --color-ink-soft: #9FB3C8;
+  --color-line: #24405C;
+
+  --color-teal: #1B9A90;
+  --color-teal-dark: #17827A;
+  --color-teal-tint: #123B37;
+
+  --color-coral: #FF8A73;
+  --color-coral-dark: #F9684F;
+  --color-coral-tint: #3A211C;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.45);
+}

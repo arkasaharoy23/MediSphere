@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify your email — PulseLink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../../public/assets/images/logo.svg">
+<link rel="stylesheet" href="../../css/style.css">
+<link rel="stylesheet" href="../../css/pages/auth.css">
+</head>
+<body>
+
+<a href="../index.html" class="auth-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6L5 12L11 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  Back to PulseLink
+</a>
+
+<button class="theme-toggle auth-theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+  </svg>
+</button>
+
+<div class="auth-page">
+  <div class="auth-card auth-stepper">
+
+    <div class="auth-status" data-verify-section="checking" hidden>
+      <div class="spinner"></div>
+      <h2>Verifying your email</h2>
+      <p>This will only take a moment.</p>
+    </div>
+
+    <div class="auth-status" data-verify-section="success" hidden>
+      <div class="auth-status__icon c-teal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12L11 14L15 10" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <h2>Email verified</h2>
+      <p>Your email is confirmed. You're all set to continue.</p>
+      <a href="login.html" class="btn btn--primary">Continue to log in</a>
+    </div>
+
+    <div class="auth-status" data-verify-section="error" hidden>
+      <div class="auth-status__icon c-coral">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8V13M12 16H12.01" stroke-linecap="round"/></svg>
+      </div>
+      <h2>Verification failed</h2>
+      <p data-verify-error-message>This link is invalid or has expired.</p>
+      <button type="button" class="btn btn--primary" data-resend-btn>Resend email</button>
+    </div>
+
+    <div class="auth-status" data-verify-section="pending" hidden>
+      <div class="auth-status__icon c-teal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4H20V20H4V4Z" stroke-linejoin="round"/><path d="M4 6L12 13L20 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2>Verify your email</h2>
+      <p>We've sent a verification link to your inbox. Click it to confirm your account.</p>
+      <button type="button" class="btn btn--primary" data-resend-btn>Resend email</button>
+      <p class="auth-foot">Already verified? <a href="login.html">Log in</a></p>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="../../js/auth/verifyEmail.js"></script>
+</body>
+</html>

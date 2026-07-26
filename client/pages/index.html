@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PulseLink — Healthcare, Connected</title>
+<meta name="description" content="PulseLink connects patients, doctors, hospitals, labs, pharmacies, and ambulances on one secure platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../public/assets/images/logo.svg">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/pages/home.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="navbar__inner">
+    <a href="index.html" class="navbar__brand">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="14.5" stroke="var(--color-navy)" stroke-width="1.75"/>
+        <path d="M6 16H11L13.5 9L18.5 23L21 16H26" stroke="var(--color-teal)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="13.5" cy="9" r="1.75" fill="var(--color-coral)"/>
+      </svg>
+      PulseLink
+    </a>
+
+    <nav class="navbar__links" data-nav-links data-open="false">
+      <a href="#network">Network</a>
+      <a href="#emergency">Emergency</a>
+      <a href="#trust">Security</a>
+      <a href="auth/login.html">Log in</a>
+    </nav>
+
+    <div class="navbar__actions">
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+        </svg>
+      </button>
+      <a href="auth/login.html" class="btn btn--ghost btn--sm">Log in</a>
+      <a href="auth/register.html" class="btn btn--primary btn--sm">Get started</a>
+      <button class="nav-toggle" data-nav-toggle aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6H20M4 12H20M4 18H20" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <span class="eyebrow">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 12H8L10.5 5L14 19L17 12H21" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Healthcare, connected end to end</span>
+    </span>
+
+    <h1>One pulse. Every part of care, in sync.</h1>
+
+    <p class="hero__lede">
+      PulseLink brings patients, doctors, hospitals, labs, pharmacies, and ambulances onto a single secure line, so records, appointments, and emergencies move as fast as they need to.
+    </p>
+
+    <div class="hero__ctas">
+      <a href="auth/register.html?role=patient" class="btn btn--primary">Get started as a patient</a>
+      <a href="auth/register.html?role=provider" class="btn btn--ghost">I'm a provider</a>
+    </div>
+
+    <div class="pulse" id="network">
+      <svg class="pulse__svg" viewBox="0 0 1000 160" xmlns="http://www.w3.org/2000/svg">
+        <path class="pulse__trace" d="M10,80 L75,80 L90,30 L105,120 L120,80 L247,80 L262,30 L277,120 L292,80 L419,80 L434,30 L449,120 L464,80 L591,80 L606,30 L621,120 L636,80 L763,80 L778,30 L793,120 L808,80 L935,80 L950,30 L965,120 L980,80 L995,80"/>
+
+        <circle class="pulse__glow" cx="90" cy="30" r="5"/>
+
+        <circle class="pulse__node" data-pulse-target="#role-patient" cx="90" cy="30" r="7"/>
+        <circle class="pulse__node" data-pulse-target="#role-doctor" cx="262" cy="30" r="7"/>
+        <circle class="pulse__node" data-pulse-target="#role-hospital" cx="434" cy="30" r="7"/>
+        <circle class="pulse__node" data-pulse-target="#role-lab" cx="606" cy="30" r="7"/>
+        <circle class="pulse__node" data-pulse-target="#role-pharmacy" cx="778" cy="30" r="7"/>
+        <circle class="pulse__node" data-pulse-target="#role-ambulance" cx="950" cy="30" r="7"/>
+      </svg>
+
+      <div class="pulse__labels">
+        <button data-pulse-target="#role-patient">Patient</button>
+        <button data-pulse-target="#role-doctor">Doctor</button>
+        <button data-pulse-target="#role-hospital">Hospital</button>
+        <button data-pulse-target="#role-lab">Lab</button>
+        <button data-pulse-target="#role-pharmacy">Pharmacy</button>
+        <button data-pulse-target="#role-ambulance">Ambulance</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head">
+      <span class="eyebrow">The network</span>
+      <h2>Everyone on one line</h2>
+      <p class="lede">Each role gets a dashboard built for how they actually work, all reading from the same secure source of truth.</p>
+    </div>
+
+    <div class="role-grid">
+
+      <article class="role-card" id="role-patient">
+        <div class="role-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21C4 16.5 7.5 14 12 14C16.5 14 20 16.5 20 21" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Patient</h3>
+        <p>Book appointments, view medical history, and trigger an emergency SOS in one tap.</p>
+        <a class="role-card__link" href="auth/register.html?role=patient">Join as a patient
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="role-card" id="role-doctor">
+        <div class="role-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 3V8C9 10 7 11 7 13C7 16 9.5 18 12 18C14.5 18 17 16 17 13C17 11 15 10 15 8V3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="18" cy="6" r="2"/>
+          </svg>
+        </div>
+        <h3>Doctor</h3>
+        <p>Manage availability, review patient history, and issue prescriptions from anywhere.</p>
+        <a class="role-card__link" href="auth/register.html?role=doctor">Join as a doctor
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="role-card" id="role-hospital">
+        <div class="role-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 21V6L12 3L20 6V21" stroke-linejoin="round"/>
+            <path d="M9 21V14H15V21" stroke-linejoin="round"/>
+            <path d="M12 8V12M10 10H14" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Hospital</h3>
+        <p>Coordinate departments, doctors, bed availability, and incoming emergency cases.</p>
+        <a class="role-card__link" href="auth/register.html?role=hospital">Register a hospital
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="role-card" id="role-lab">
+        <div class="role-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/>
+            <path d="M7 15H17" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Diagnostic Lab</h3>
+        <p>Take test bookings, upload reports, and keep a searchable history for every patient.</p>
+        <a class="role-card__link" href="auth/register.html?role=lab">Register a lab
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="role-card" id="role-pharmacy">
+        <div class="role-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="4" width="16" height="16" rx="3"/>
+            <path d="M12 8V16M8 12H16" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Pharmacy</h3>
+        <p>Track medicine inventory, fulfill orders, and give patients live order status.</p>
+        <a class="role-card__link" href="auth/register.html?role=pharmacy">Register a pharmacy
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+      <article class="role-card" id="role-ambulance">
+        <div class="role-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 17V10H15V17" stroke-linejoin="round"/>
+            <path d="M15 12H19L21 15V17" stroke-linejoin="round"/>
+            <circle cx="7" cy="18" r="2"/>
+            <circle cx="17" cy="18" r="2"/>
+            <path d="M7 6H11M9 4V8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Ambulance</h3>
+        <p>Receive emergency requests, share live location, and update availability in real time.</p>
+        <a class="role-card__link" href="auth/register.html?role=ambulance">Register a fleet
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section" id="emergency">
+    <div class="emergency">
+      <div>
+        <span class="eyebrow emergency__eyebrow">Emergency SOS</span>
+        <h2>When minutes matter, PulseLink doesn't wait.</h2>
+        <ul>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15 9L22 10L17 15L18 22L12 18.5L6 22L7 15L2 10L9 9L12 2Z" stroke-linejoin="round"/></svg>
+            One tap alerts the nearest available ambulance and shares your live location.
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92V19.92C22 20.47 21.55 20.92 21 20.92C10 20.92 3 13.92 3 2.92C3 2.37 3.45 1.92 4 1.92H7C7.55 1.92 8 2.37 8 2.92C8 4.92 8.5 6.82 9.5 8.42" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Your emergency contacts and nearest hospital are notified automatically.
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 6V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V6L12 2Z" stroke-linejoin="round"/></svg>
+            Your key medical history follows you to the responding team.
+          </li>
+        </ul>
+        <a href="auth/register.html?role=patient" class="btn btn--coral">Set up my SOS profile</a>
+      </div>
+
+      <div class="emergency__panel">
+        <div class="emergency__panel-row">
+          <span>
+            <span class="stat-figure">24/7</span>
+            <span class="label">Emergency dispatch coverage</span>
+          </span>
+        </div>
+        <div class="emergency__panel-row">
+          <span>
+            <span class="stat-figure">1 tap</span>
+            <span class="label">From SOS to nearest ambulance</span>
+          </span>
+        </div>
+        <div class="emergency__panel-row">
+          <span>
+            <span class="stat-figure">Live</span>
+            <span class="label">Location shared with responders</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="trust">
+    <div class="section__head">
+      <span class="eyebrow">Security</span>
+      <h2>Built to handle care data responsibly</h2>
+      <p class="lede">Every layer of PulseLink is designed with role-based access and encryption in mind, not bolted on after.</p>
+    </div>
+
+    <div class="trust">
+      <div class="trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 6V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V6L12 2Z" stroke-linejoin="round"/></svg>
+        <h3>Encrypted by design</h3>
+        <p>Data is encrypted in transit and at rest, from registration to medical records.</p>
+      </div>
+      <div class="trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7C8 4.79 9.79 3 12 3C14.21 3 16 4.79 16 7V10" stroke-linecap="round"/></svg>
+        <h3>Role-based access</h3>
+        <p>A pharmacy never sees lab reports, a lab never sees prescriptions. Access matches role.</p>
+      </div>
+      <div class="trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12L11 14L15 10" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 2L4 6V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V6L12 2Z" stroke-linejoin="round"/></svg>
+        <h3>Verified providers</h3>
+        <p>Doctors and hospitals are manually verified by our admin team before going live.</p>
+      </div>
+      <div class="trust__item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12H8L10.5 5L14 19L17 12H21" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Always-on monitoring</h3>
+        <p>Rate limiting and request validation guard every endpoint against misuse.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="cta-band">
+      <h2>Bring your care team onto one line.</h2>
+      <p>Whether you're a patient, a solo practitioner, or a full hospital network, PulseLink scales to fit.</p>
+      <div class="hero__ctas">
+        <a href="auth/register.html" class="btn btn--primary">Create your account</a>
+        <a href="auth/login.html" class="btn btn--on-navy">I already have one</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <div class="footer__brand-mark">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="14.5" stroke="var(--color-navy)" stroke-width="1.75"/>
+          <path d="M6 16H11L13.5 9L18.5 23L21 16H26" stroke="var(--color-teal)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="13.5" cy="9" r="1.75" fill="var(--color-coral)"/>
+        </svg>
+        PulseLink
+      </div>
+      <p>One secure platform connecting patients, providers, and emergency services.</p>
+    </div>
+
+    <div class="footer__col">
+      <h4>Patients</h4>
+      <ul>
+        <li><a href="auth/register.html?role=patient">Create account</a></li>
+        <li><a href="patient/appointments.html">Book appointment</a></li>
+        <li><a href="patient/emergency.html">Emergency SOS</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Providers</h4>
+      <ul>
+        <li><a href="auth/register.html?role=doctor">Join as a doctor</a></li>
+        <li><a href="auth/register.html?role=hospital">Register a hospital</a></li>
+        <li><a href="auth/register.html?role=lab">Register a lab</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#trust">Security</a></li>
+        <li><a href="#emergency">Emergency response</a></li>
+        <li><a href="auth/login.html">Log in</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <span>© 2026 PulseLink. All rights reserved.</span>
+    <span>Made for hospitals, clinics, and the patients they serve.</span>
+  </div>
+</footer>
+
+<script type="module" src="../js/main.js"></script>
+</body>
+</html>

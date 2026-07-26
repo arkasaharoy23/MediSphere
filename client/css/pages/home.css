@@ -1,0 +1,346 @@
+.hero {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-7);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero__eyebrow {
+  margin-bottom: var(--space-5);
+}
+
+.hero h1 {
+  max-width: 16ch;
+}
+
+.hero__lede {
+  margin: var(--space-5) 0 var(--space-6);
+  font-size: 1.15rem;
+  max-width: 52ch;
+}
+
+.hero__ctas {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pulse {
+  width: 100%;
+  max-width: 980px;
+  margin-top: var(--space-9);
+  position: relative;
+}
+
+.pulse__svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.pulse__trace {
+  fill: none;
+  stroke: var(--color-teal);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1400;
+  stroke-dashoffset: 1400;
+  animation: draw 2.2s var(--ease-out) forwards 0.3s;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.pulse__node {
+  fill: var(--color-bg);
+  stroke: var(--color-teal);
+  stroke-width: 2.5;
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: appear 0.5s var(--ease-out) forwards;
+}
+
+.pulse__node:hover {
+  fill: var(--color-teal);
+}
+
+@keyframes appear {
+  to {
+    opacity: 1;
+  }
+}
+
+.pulse__node:nth-of-type(1) { animation-delay: 0.5s; }
+.pulse__node:nth-of-type(2) { animation-delay: 0.75s; }
+.pulse__node:nth-of-type(3) { animation-delay: 1s; }
+.pulse__node:nth-of-type(4) { animation-delay: 1.25s; }
+.pulse__node:nth-of-type(5) { animation-delay: 1.5s; }
+.pulse__node:nth-of-type(6) { animation-delay: 1.75s; }
+
+.pulse__glow {
+  fill: var(--color-teal);
+  opacity: 0;
+  animation: glow 2.6s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0; r: 5; }
+  50% { opacity: 0.35; r: 13; }
+}
+
+.pulse__labels {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  margin-top: var(--space-3);
+  gap: var(--space-2);
+}
+
+.pulse__labels button {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: color 0.2s var(--ease-out);
+}
+
+.pulse__labels button:hover {
+  color: var(--color-teal);
+}
+
+.section {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-9) var(--space-6);
+}
+
+.section__head {
+  max-width: 58ch;
+  margin-bottom: var(--space-7);
+}
+
+.section__head h2 {
+  margin-top: var(--space-3);
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-5);
+}
+
+.role-card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
+  scroll-margin-top: 100px;
+}
+
+.role-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-teal);
+}
+
+.role-card__icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: var(--color-teal-tint);
+  display: grid;
+  place-items: center;
+  color: var(--color-teal);
+}
+
+.role-card__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.role-card p {
+  font-size: 0.94rem;
+  flex-grow: 1;
+}
+
+.role-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-teal);
+}
+
+.role-card__link svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.role-card:hover .role-card__link svg {
+  transform: translateX(3px);
+}
+
+.emergency {
+  background: var(--color-coral-tint);
+  border-radius: var(--radius-lg);
+  margin: 0 var(--space-6);
+  padding: var(--space-8) var(--space-7);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-7);
+  align-items: center;
+}
+
+.emergency__eyebrow {
+  color: var(--color-coral-dark);
+}
+
+.emergency h2 {
+  margin: var(--space-3) 0 var(--space-4);
+}
+
+.emergency ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.emergency li {
+  display: flex;
+  gap: var(--space-3);
+  font-size: 0.94rem;
+  color: var(--color-ink);
+}
+
+.emergency li svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--color-coral-dark);
+  margin-top: 2px;
+}
+
+.emergency__panel {
+  background: var(--color-bg-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.emergency__panel .stat-figure {
+  font-size: 2.4rem;
+  color: var(--color-coral-dark);
+  display: block;
+}
+
+.emergency__panel span.label {
+  font-size: 0.86rem;
+  color: var(--color-ink-soft);
+  display: block;
+  margin-top: var(--space-1);
+}
+
+.emergency__panel-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-line);
+}
+
+.emergency__panel-row:first-child {
+  border-top: none;
+}
+
+.trust {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+
+.trust__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.trust__item svg {
+  width: 26px;
+  height: 26px;
+  color: var(--color-teal);
+}
+
+.trust__item h3 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.trust__item p {
+  font-size: 0.9rem;
+}
+
+.cta-band {
+  background: var(--color-navy);
+  border-radius: var(--radius-lg);
+  margin: 0 var(--space-6) var(--space-9);
+  padding: var(--space-8);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.cta-band h2 {
+  color: var(--color-on-navy);
+}
+
+.cta-band p {
+  color: var(--color-on-navy-soft);
+  max-width: 50ch;
+}
+
+@media (max-width: 960px) {
+  .role-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .emergency {
+    grid-template-columns: 1fr;
+  }
+
+  .trust {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pulse__labels {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: var(--space-3);
+  }
+}
+
+@media (max-width: 620px) {
+  .role-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer__inner {
+    grid-template-columns: 1fr;
+  }
+}

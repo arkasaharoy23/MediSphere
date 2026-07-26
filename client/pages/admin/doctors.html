@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctors — PulseLink Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../../public/assets/images/logo.svg">
+<link rel="stylesheet" href="../../css/style.css">
+<link rel="stylesheet" href="../../css/layout/sidebar.css">
+<link rel="stylesheet" href="../../css/pages/dashboard.css">
+<link rel="stylesheet" href="../../css/pages/admin.css">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <aside class="sidebar" data-sidebar>
+    <div class="sidebar__brand">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="14.5" stroke="var(--color-on-navy)" stroke-width="1.75"/>
+        <path d="M6 16H11L13.5 9L18.5 23L21 16H26" stroke="var(--color-teal)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="13.5" cy="9" r="1.75" fill="var(--color-coral)"/>
+      </svg>
+      PulseLink
+    </div>
+
+    <nav class="sidebar__nav">
+      <a href="dashboard.html" class="sidebar__link" data-active="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>
+        Dashboard
+      </a>
+      <a href="doctors.html" class="sidebar__link" data-active="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3V8C9 10 7 11 7 13C7 16 9.5 18 12 18C14.5 18 17 16 17 13C17 11 15 10 15 8V3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="6" r="2"/></svg>
+        Doctors
+      </a>
+      <a href="hospitals.html" class="sidebar__link" data-active="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V6L12 3L20 6V21" stroke-linejoin="round"/><path d="M9 21V14H15V21" stroke-linejoin="round"/></svg>
+        Hospitals
+      </a>
+      <a href="labs.html" class="sidebar__link" data-active="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
+        Labs
+      </a>
+      <a href="pharmacies.html" class="sidebar__link" data-active="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8V16M8 12H16" stroke-linecap="round"/></svg>
+        Pharmacies
+      </a>
+      <a href="ambulances.html" class="sidebar__link" data-active="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17V10H15V17" stroke-linejoin="round"/><path d="M15 12H19L21 15V17" stroke-linejoin="round"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+        Ambulances
+      </a>
+      <a href="users.html" class="sidebar__link" data-active="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 20C2 16 5 13.5 9 13.5C13 13.5 16 16 16 20" stroke-linecap="round"/><path d="M17 8.5C18.5 8.5 19.5 9.7 19.5 11C19.5 12.3 18.5 13.5 17 13.5" stroke-linecap="round"/></svg>
+        Users
+      </a>
+      <a href="analytics.html" class="sidebar__link" data-active="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20V14" stroke-linecap="round"/></svg>
+        Analytics
+      </a>
+    </nav>
+
+    <button class="sidebar__logout" data-logout-btn>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H9" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17L21 12L16 7" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12H9" stroke-linecap="round"/></svg>
+      Log out
+    </button>
+  </aside>
+
+  <div class="app-main">
+
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="sidebar-toggle" data-sidebar-toggle aria-label="Open menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6H20M4 12H20M4 18H20" stroke-linecap="round"/></svg>
+        </button>
+        <span class="topbar__title">Doctors</span>
+      </div>
+
+      <div class="topbar__actions">
+        <button class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        </button>
+        <div class="topbar__avatar" data-topbar-avatar>A</div>
+      </div>
+    </header>
+
+    <main class="app-content">
+
+      <div class="dash-welcome">
+        <h1>Doctors</h1>
+        <p data-user-name>Loading...</p>
+      </div>
+
+      <div class="status-tabs">
+        <button type="button" data-status-tab="pending" data-active="true">Pending</button>
+        <button type="button" data-status-tab="verified" data-active="false">Verified</button>
+        <button type="button" data-status-tab="rejected" data-active="false">Rejected</button>
+        <button type="button" data-status-tab="all" data-active="false">All</button>
+      </div>
+
+      <div class="review-list" data-review-list>
+        <p class="review-empty">Loading...</p>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script type="module" src="../../js/admin/doctors.js"></script>
+</body>
+</html>

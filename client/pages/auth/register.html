@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create your account — PulseLink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../../public/assets/images/logo.svg">
+<link rel="stylesheet" href="../../css/style.css">
+<link rel="stylesheet" href="../../css/pages/auth.css">
+</head>
+<body>
+
+<a href="../index.html" class="auth-back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6L5 12L11 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  Back to PulseLink
+</a>
+
+<button class="theme-toggle auth-theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+  </svg>
+</button>
+
+<div class="auth-page">
+  <div class="auth-card auth-stepper">
+
+    <div class="auth-head">
+      <h1>Create your account</h1>
+      <p>Join PulseLink as a patient or a care provider.</p>
+    </div>
+
+    <div class="stepper-dots">
+      <span data-active="true"></span>
+      <span data-active="false"></span>
+      <span data-active="false"></span>
+    </div>
+
+    <section class="auth-step" data-step="1" data-active="true">
+      <div class="role-select-grid">
+
+        <button type="button" class="role-option" data-role="patient">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21C4 16.5 7.5 14 12 14C16.5 14 20 16.5 20 21" stroke-linecap="round"/></svg>
+          <span>Patient</span>
+        </button>
+
+        <button type="button" class="role-option" data-role="doctor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3V8C9 10 7 11 7 13C7 16 9.5 18 12 18C14.5 18 17 16 17 13C17 11 15 10 15 8V3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18" cy="6" r="2"/></svg>
+          <span>Doctor</span>
+        </button>
+
+        <button type="button" class="role-option" data-role="hospital">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V6L12 3L20 6V21" stroke-linejoin="round"/><path d="M9 21V14H15V21" stroke-linejoin="round"/><path d="M12 8V12M10 10H14" stroke-linecap="round"/></svg>
+          <span>Hospital</span>
+        </button>
+
+        <button type="button" class="role-option" data-role="lab">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/><path d="M7 15H17" stroke-linecap="round"/></svg>
+          <span>Diagnostic lab</span>
+        </button>
+
+        <button type="button" class="role-option" data-role="pharmacy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8V16M8 12H16" stroke-linecap="round"/></svg>
+          <span>Pharmacy</span>
+        </button>
+
+        <button type="button" class="role-option" data-role="ambulance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17V10H15V17" stroke-linejoin="round"/><path d="M15 12H19L21 15V17" stroke-linejoin="round"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+          <span>Ambulance</span>
+        </button>
+
+      </div>
+
+      <div class="auth-step-actions">
+        <span></span>
+        <button type="button" class="btn btn--primary" data-role-continue disabled>Continue</button>
+      </div>
+    </section>
+
+    <section class="auth-step" data-step="2" data-active="false">
+      <form data-account-form novalidate>
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-field">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" placeholder="10-digit mobile number" data-phone-input required>
+          <small>Required for all accounts.</small>
+        </div>
+
+        <div class="form-field password-field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+          <button type="button" class="password-toggle" data-password-toggle aria-label="Show password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12S5 5 12 5S22 12 22 12S19 19 12 19S2 12 2 12Z" stroke-linejoin="round"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Create account &amp; continue</button>
+      </form>
+
+      <div class="divider">or</div>
+
+      <button type="button" class="btn btn--google" data-google-btn>
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.5 12.2c0-.8-.07-1.5-.2-2.2H12v4.2h5.9c-.25 1.3-1 2.5-2.2 3.2v2.6h3.5c2-1.9 3.3-4.7 3.3-7.8z"/><path fill="#34A853" d="M12 23c3 0 5.4-1 7.2-2.7l-3.5-2.6c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.2v2.7C4 20.9 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.3c-.2-.7-.4-1.4-.4-2.3s.15-1.5.4-2.3V7H2.2C1.4 8.5 1 10.2 1 12s.4 3.5 1.2 5l3.6-2.7z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .55 4.2 1.6l3.1-3.1C17.4 2.1 15 1 12 1 7.7 1 4 3.1 2.2 7l3.6 2.7c.9-2.6 3.3-4.3 6.2-4.3z"/></svg>
+        Continue with Google
+      </button>
+    </section>
+
+    <section class="auth-step" data-step="3" data-active="false">
+      <form data-details-form novalidate>
+        <div data-role-fields></div>
+
+        <div class="form-field">
+          <label>Profile picture (optional)</label>
+          <label class="form-file">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21C4 16.5 7.5 14 12 14C16.5 14 20 16.5 20 21" stroke-linecap="round"/></svg>
+            </span>
+            <span data-profile-pic-label>Choose a photo</span>
+            <input type="file" accept="image/jpeg,image/png,image/webp" data-profile-pic-input>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Create account</button>
+      </form>
+    </section>
+
+    <p class="auth-foot">Already have an account? <a href="login.html">Log in</a></p>
+  </div>
+</div>
+
+<script type="module" src="../../js/auth/register.js"></script>
+</body>
+</html>
