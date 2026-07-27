@@ -5,5 +5,6 @@
 @import url('layout/navbar.css');
 @import url('layout/footer.css');
 @import url('components/buttons.css');
+@import url('components/forms.css');
 @import url('components/toast.css');
 @import url('components/modals.css');

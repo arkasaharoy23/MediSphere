@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const config = require('./config/env');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const patientRoutes = require('./routes/patientRoutes');
 const notFoundMiddleware = require('./middleware/notFoundMiddleware');
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/patient', patientRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

@@ -5,15 +5,17 @@ const Hospital = require('../models/Hospital');
 const Lab = require('../models/Lab');
 const Pharmacy = require('../models/Pharmacy');
 const Ambulance = require('../models/Ambulance');
+const Patient = require('../models/Patient');
 const asyncHandler = require('../utils/asyncHandler');
 
-const ROLE_MODELS = { doctor: Doctor, hospital: Hospital, lab: Lab, pharmacy: Pharmacy, ambulance: Ambulance };
+const ROLE_MODELS = { doctor: Doctor, hospital: Hospital, lab: Lab, pharmacy: Pharmacy, ambulance: Ambulance, patient: Patient };
 const NAME_FIELDS = {
   doctor: 'fullName',
   hospital: 'hospitalName',
   lab: 'labName',
   pharmacy: 'pharmacyName',
-  ambulance: 'driverName'
+  ambulance: 'driverName',
+  patient: 'fullName'
 };
 
 async function resolveDisplayName(role, userId, email) {
