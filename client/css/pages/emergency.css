@@ -1,0 +1,155 @@
+.appt-section {
+  margin-bottom: var(--space-8);
+}
+
+.appt-section h2 {
+  font-size: 1.15rem;
+  margin-bottom: var(--space-4);
+}
+
+.sos-panel {
+  background: var(--color-coral-tint);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.sos-panel h2 {
+  font-size: 1.4rem;
+  margin-bottom: var(--space-2);
+}
+
+.sos-panel p {
+  max-width: 46ch;
+  margin: 0 auto var(--space-6);
+}
+
+.sos-trigger-btn {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: var(--color-coral);
+  color: #FFFBFA;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-weight: 700;
+  font-size: 0.94rem;
+  box-shadow: 0 12px 32px rgba(249, 115, 96, 0.35);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+.sos-trigger-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 16px 40px rgba(249, 115, 96, 0.45);
+}
+
+.sos-trigger-btn svg {
+  width: 32px;
+  height: 32px;
+}
+
+.sos-active-card {
+  background: var(--color-bg-raised);
+  border: 2px solid var(--color-coral);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  text-align: left;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.sos-active-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-coral);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-4);
+}
+
+.sos-active-card__badge .pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-coral);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.sos-active-card dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-5);
+  font-size: 0.9rem;
+}
+
+.sos-active-card dt {
+  color: var(--color-ink-soft);
+}
+
+.status-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.status-badge--pending {
+  color: var(--color-coral);
+  background: var(--color-coral-tint);
+}
+
+.status-badge--confirmed {
+  color: var(--color-teal);
+  background: var(--color-teal-tint);
+}
+
+.status-badge--cancelled {
+  color: var(--color-ink-soft);
+  background: var(--color-line);
+}
+
+.sos-empty {
+  color: var(--color-ink-soft);
+  padding: var(--space-5);
+  text-align: center;
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+.sos-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sos-history-card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.sos-history-card p {
+  font-size: 0.86rem;
+}
