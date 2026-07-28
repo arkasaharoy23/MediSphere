@@ -6,6 +6,9 @@ const config = require('./config/env');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const patientRoutes = require('./routes/patientRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
+const emergencyRoutes = require('./routes/emergencyRoutes');
+const medicalRecordRoutes = require('./routes/medicalRecordRoutes');
 const notFoundMiddleware = require('./middleware/notFoundMiddleware');
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -35,6 +38,9 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/patient', patientRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/emergency', emergencyRoutes);
+app.use('/api/records', medicalRecordRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

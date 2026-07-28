@@ -1,0 +1,94 @@
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.record-empty {
+  color: var(--color-ink-soft);
+  padding: var(--space-8) var(--space-5);
+  text-align: center;
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+.record-card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.record-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.record-card__head h3 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.record-card__date {
+  font-size: 0.8rem;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+}
+
+.record-type-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--color-teal-tint);
+  color: var(--color-teal);
+  display: inline-block;
+  margin-bottom: var(--space-3);
+}
+
+.medicine-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-3);
+}
+
+.medicine-table th,
+.medicine-table td {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 0.86rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.medicine-table th {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+.record-card p {
+  font-size: 0.9rem;
+}
+
+.record-card a.doc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.86rem;
+  color: var(--color-teal);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  margin-top: var(--space-3);
+}
+
+.record-card a.doc-link svg {
+  width: 15px;
+  height: 15px;
+}
