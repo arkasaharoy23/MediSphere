@@ -128,19 +128,16 @@ function buildApptCard(appt) {
 }
 
 async function loadAppointments() {
+  const section = document.querySelector('[data-appt-section]');
   const list = document.querySelector('[data-appt-list]');
   const result = await authFetch('/api/appointments/mine');
 
-  if (!result.ok) {
-    list.innerHTML = `<p class="appt-empty">${result.message}</p>`;
+  if (!result.ok || result.data.length === 0) {
+    section.hidden = true;
     return;
   }
 
-  if (result.data.length === 0) {
-    list.innerHTML = '<p class="appt-empty">You have no appointments yet.</p>';
-    return;
-  }
-
+  section.hidden = false;
   list.innerHTML = '';
   result.data.forEach((appt) => list.appendChild(buildApptCard(appt)));
 }
