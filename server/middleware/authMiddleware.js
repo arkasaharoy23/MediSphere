@@ -46,7 +46,7 @@ async function protectHandler(req, res, next) {
 
   const user = await User.findOne({ firebaseUid: decoded.uid });
   if (!user) {
-    return res.status(404).json({ ok: false, message: 'No PulseLink account found for this login' });
+    return res.status(404).json({ ok: false, message: 'No MediSphere account found for this login' });
   }
 
   if (!user.isActive) {

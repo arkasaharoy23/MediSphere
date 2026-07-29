@@ -1,7 +1,7 @@
 {
-  "name": "pulselink-server",
+  "name": "MediSphere-server",
   "version": "1.0.0",
-  "description": "PulseLink healthcare platform backend",
+  "description": "MediSphere healthcare platform backend",
   "main": "server.js",
   "scripts": {
     "start": "node server/server.js",

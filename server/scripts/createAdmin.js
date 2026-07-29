@@ -16,7 +16,7 @@ async function run() {
 
   const existing = await User.findOne({ firebaseUid });
   if (existing) {
-    console.log('A PulseLink account already exists for this Firebase user.');
+    console.log('A MediSphere account already exists for this Firebase user.');
     process.exit(1);
   }
 

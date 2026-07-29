@@ -193,7 +193,7 @@ async function login(req, res) {
 
   const user = await User.findOne({ firebaseUid: decoded.uid });
   if (!user) {
-    return fail(res, 'No PulseLink account found for this login, please register first', 404);
+    return fail(res, 'No MediSpheree account found for this login, please register first', 404);
   }
 
   if (!user.isActive) {

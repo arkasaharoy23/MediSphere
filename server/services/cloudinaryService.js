@@ -4,7 +4,7 @@ function uploadBuffer(buffer, folder, isPrivate = true) {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder: `pulselink/${folder}`,
+        folder: `MediSphere/${folder}`,
         resource_type: 'auto',
         type: isPrivate ? 'authenticated' : 'upload'
       },

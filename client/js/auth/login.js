@@ -79,7 +79,7 @@ function initAdminToggle() {
 
     heading.textContent = adminMode ? 'Administrator log in' : 'Log in';
     subtext.textContent = adminMode
-      ? 'Restricted access for PulseLink administrators.'
+      ? 'Restricted access for MediSphereee administrators.'
       : 'Enter your details to continue.';
     toggleBtn.textContent = adminMode
       ? 'Not an administrator? Back to regular login'

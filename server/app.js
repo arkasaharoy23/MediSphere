@@ -32,7 +32,7 @@ const authLimiter = rateLimit({
 });
 
 app.get('/', (req, res) => {
-  res.json({ ok: true, message: 'PulseLink API is running' });
+  res.json({ ok: true, message: 'MediSphere API is running' });
 });
 
 app.use('/api/auth', authLimiter, authRoutes);
