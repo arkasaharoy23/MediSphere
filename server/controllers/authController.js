@@ -15,6 +15,9 @@ async function createRoleRecord(role, userId, body, files) {
   if (role === 'doctor') {
     const cert = files?.registrationCertificate?.[0];
     if (!cert) throw new Error('Registration certificate is required');
+    if (!body.city || !body.lat || !body.lng) {
+      throw new Error('Practice location is required — please detect your location before submitting');
+    }
     const certUpload = await uploadBuffer(cert.buffer, 'doctors');
     return Doctor.create({
       userId,
@@ -23,7 +26,9 @@ async function createRoleRecord(role, userId, body, files) {
       registrationNumberEncrypted: encrypt(body.registrationNumber),
       registrationNumberHash: hashForLookup(body.registrationNumber),
       registrationCertificateUrl: certUpload.url,
-      registrationCertificatePublicId: certUpload.publicId
+      registrationCertificatePublicId: certUpload.publicId,
+      city: body.city,
+      location: { type: 'Point', coordinates: [Number(body.lng), Number(body.lat)] }
     });
   }
 
@@ -31,6 +36,9 @@ async function createRoleRecord(role, userId, body, files) {
     const doc1 = files?.document1?.[0];
     const doc2 = files?.document2?.[0];
     if (!doc1 || !doc2) throw new Error('Two verification documents are required');
+    if (!body.city || !body.lat || !body.lng) {
+      throw new Error('Hospital location is required — please detect your location before submitting');
+    }
     const [upload1, upload2] = await Promise.all([
       uploadBuffer(doc1.buffer, 'hospitals'),
       uploadBuffer(doc2.buffer, 'hospitals')
@@ -42,7 +50,9 @@ async function createRoleRecord(role, userId, body, files) {
       licenseNumberEncrypted: encrypt(body.licenseNumber),
       licenseNumberHash: hashForLookup(body.licenseNumber),
       documentUrls: [upload1.url, upload2.url],
-      documentPublicIds: [upload1.publicId, upload2.publicId]
+      documentPublicIds: [upload1.publicId, upload2.publicId],
+      city: body.city,
+      location: { type: 'Point', coordinates: [Number(body.lng), Number(body.lat)] }
     });
   }
 

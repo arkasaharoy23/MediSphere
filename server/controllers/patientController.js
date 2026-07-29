@@ -1,4 +1,6 @@
 const Patient = require('../models/Patient');
+const Doctor = require('../models/Doctor');
+const User = require('../models/User');
 const { encrypt, decrypt } = require('../utils/helpers');
 const { success, fail } = require('../utils/response');
 const asyncHandler = require('../utils/asyncHandler');
@@ -50,4 +52,43 @@ async function updateProfile(req, res) {
   return success(res, { message: 'Profile updated' });
 }
 
-module.exports = { getProfile: asyncHandler(getProfile), updateProfile: asyncHandler(updateProfile) };
+async function listDoctors(req, res) {
+  const { lat, lng, maxDistanceKm } = req.query;
+
+  const doctorUsers = await User.find({ role: 'doctor', verificationStatus: 'verified' });
+  const verifiedIds = doctorUsers.map((u) => u._id);
+
+  let doctorRecords;
+  let locationFiltered = false;
+
+  if (lat && lng) {
+    const radiusMeters = (Number(maxDistanceKm) || 25) * 1000;
+    doctorRecords = await Doctor.find({
+      userId: { $in: verifiedIds },
+      location: {
+        $near: {
+          $geometry: { type: 'Point', coordinates: [Number(lng), Number(lat)] },
+          $maxDistance: radiusMeters
+        }
+      }
+    });
+    locationFiltered = true;
+  } else {
+    doctorRecords = await Doctor.find({ userId: { $in: verifiedIds } });
+  }
+
+  const results = doctorRecords.map((record) => ({
+    doctorId: record.userId,
+    fullName: record.fullName,
+    specialization: record.specialization,
+    city: record.city
+  }));
+
+  return success(res, { doctors: results, locationFiltered });
+}
+
+module.exports = {
+  getProfile: asyncHandler(getProfile),
+  updateProfile: asyncHandler(updateProfile),
+  listDoctors: asyncHandler(listDoctors)
+};

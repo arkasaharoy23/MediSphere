@@ -96,6 +96,18 @@
               <select id="doctorId" name="doctorId" data-doctor-select required>
                 <option value="">Loading doctors...</option>
               </select>
+              <small data-location-note>Detecting your location to find nearby doctors...</small>
+            </div>
+
+            <div class="form-field">
+              <label for="radius">Search radius</label>
+              <select id="radius" data-radius-select>
+                <option value="10">Within 10 km</option>
+                <option value="25" selected>Within 25 km</option>
+                <option value="50">Within 50 km</option>
+                <option value="100">Within 100 km</option>
+                <option value="all">Show all doctors</option>
+              </select>
             </div>
 
             <div class="form-row">

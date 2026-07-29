@@ -13,14 +13,18 @@ const ROLE_FIELDS = {
     { name: 'fullName', label: 'Full name', type: 'text', required: true },
     { name: 'specialization', label: 'Specialization', type: 'text', required: true },
     { name: 'registrationNumber', label: 'State medical council registration number', type: 'text', required: true },
-    { name: 'registrationCertificate', label: 'Registration certificate', type: 'file', required: true }
+    { name: 'registrationCertificate', label: 'Registration certificate', type: 'file', required: true },
+    { name: 'city', label: 'City of practice', type: 'text', required: true },
+    { name: 'location', label: 'Practice location', type: 'location', required: true }
   ],
   hospital: [
     { name: 'hospitalName', label: 'Hospital name', type: 'text', required: true },
     { name: 'address', label: 'Address', type: 'text', required: true },
     { name: 'licenseNumber', label: 'Clinical Establishment license number', type: 'text', required: true },
     { name: 'document1', label: 'Verification document 1', type: 'file', required: true },
-    { name: 'document2', label: 'Verification document 2', type: 'file', required: true }
+    { name: 'document2', label: 'Verification document 2', type: 'file', required: true },
+    { name: 'city', label: 'City', type: 'text', required: true },
+    { name: 'location', label: 'Hospital location', type: 'location', required: true }
   ],
   lab: [
     { name: 'labName', label: 'Lab name', type: 'text', required: true },
@@ -115,12 +119,71 @@ function buildTextField(field) {
   return wrapper;
 }
 
+function buildLocationField(field) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'form-field';
+
+  const label = document.createElement('label');
+  label.textContent = field.label;
+  wrapper.appendChild(label);
+
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'btn btn--ghost btn--sm';
+  button.textContent = 'Detect my location';
+
+  const statusText = document.createElement('small');
+  statusText.textContent = 'Required — used to show you to nearby patients.';
+
+  const latInput = document.createElement('input');
+  latInput.type = 'hidden';
+  latInput.name = 'lat';
+
+  const lngInput = document.createElement('input');
+  lngInput.type = 'hidden';
+  lngInput.name = 'lng';
+
+  button.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      statusText.textContent = 'Your browser does not support location detection.';
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Detecting...';
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        latInput.value = position.coords.latitude;
+        lngInput.value = position.coords.longitude;
+        statusText.textContent = `Location captured (${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)})`;
+        button.disabled = false;
+        button.textContent = 'Re-detect location';
+      },
+      () => {
+        statusText.textContent = 'Could not get your location. Please allow location access and try again.';
+        button.disabled = false;
+        button.textContent = 'Detect my location';
+      }
+    );
+  });
+
+  wrapper.appendChild(button);
+  wrapper.appendChild(statusText);
+  wrapper.appendChild(latInput);
+  wrapper.appendChild(lngInput);
+  return wrapper;
+}
+
 function renderRoleFields(role) {
   const container = document.querySelector('[data-role-fields]');
   container.innerHTML = '';
 
   ROLE_FIELDS[role].forEach((field) => {
-    const node = field.type === 'file' ? buildFileField(field) : buildTextField(field);
+    let node;
+    if (field.type === 'file') node = buildFileField(field);
+    else if (field.type === 'location') node = buildLocationField(field);
+    else node = buildTextField(field);
     container.appendChild(node);
   });
 }
@@ -194,6 +257,13 @@ function initSubmitStep() {
     event.preventDefault();
 
     if (!state.firebaseUser) return showToast('Please complete account creation first');
+
+    if (['doctor', 'hospital'].includes(state.role)) {
+      const latInput = form.querySelector('input[name="lat"]');
+      if (!latInput || !latInput.value) {
+        return showToast('Please detect your location before submitting');
+      }
+    }
 
     const submitBtn = form.querySelector('[type="submit"]');
     submitBtn.disabled = true;
