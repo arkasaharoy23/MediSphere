@@ -7,6 +7,37 @@
   margin-bottom: var(--space-4);
 }
 
+.sos-hospital-field {
+  max-width: 380px;
+  margin: 0 auto var(--space-6);
+  text-align: left;
+}
+
+.sos-hospital-field label {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: var(--space-2);
+}
+
+.sos-hospital-field select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(16, 24, 32, 0.12);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-raised);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  cursor: pointer;
+}
+
+.sos-hospital-field select:focus {
+  outline: none;
+  border-color: var(--color-coral);
+}
+
 .sos-panel {
   background: var(--color-coral-tint);
   border-radius: var(--radius-lg);

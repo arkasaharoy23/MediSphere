@@ -27,7 +27,7 @@ function renderIdleState() {
     <h2>Need help right now?</h2>
     <p>One tap shares your live location and key medical details with the responding team.</p>
 
-    <div class="form-field" style="max-width:360px;margin:0 auto var(--space-5);text-align:left;">
+    <div class="sos-hospital-field">
       <label for="sos-hospital">Preferred hospital (optional)</label>
       <select id="sos-hospital" data-hospital-select>
         ${buildHospitalOptionsHtml()}
