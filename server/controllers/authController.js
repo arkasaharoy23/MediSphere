@@ -93,6 +93,9 @@ async function createRoleRecord(role, userId, body, files) {
     if (!rc || !licenseDoc || !photo || !idDoc || !permit) {
       throw new Error('All ambulance documents are required');
     }
+    if (!body.city || !body.lat || !body.lng) {
+      throw new Error('Base location is required — please detect your location before submitting');
+    }
     const [rcUpload, licenseUpload, photoUpload, idUpload, permitUpload] =
       await Promise.all([
         uploadBuffer(rc.buffer, 'ambulances'),
@@ -116,7 +119,9 @@ async function createRoleRecord(role, userId, body, files) {
       driverIdDocUrl: idUpload.url,
       driverIdDocPublicId: idUpload.publicId,
       permitDocumentUrl: permitUpload.url,
-      permitDocumentPublicId: permitUpload.publicId
+      permitDocumentPublicId: permitUpload.publicId,
+      city: body.city,
+      location: { type: 'Point', coordinates: [Number(body.lng), Number(body.lat)] }
     });
   }
 
@@ -193,7 +198,7 @@ async function login(req, res) {
 
   const user = await User.findOne({ firebaseUid: decoded.uid });
   if (!user) {
-    return fail(res, 'No MediSpheree account found for this login, please register first', 404);
+    return fail(res, 'No PulseLink account found for this login, please register first', 404);
   }
 
   if (!user.isActive) {

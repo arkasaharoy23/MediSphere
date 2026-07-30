@@ -1,5 +1,6 @@
 const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
+const Hospital = require('../models/Hospital');
 const User = require('../models/User');
 const { encrypt, decrypt } = require('../utils/helpers');
 const { success, fail } = require('../utils/response');
@@ -87,8 +88,42 @@ async function listDoctors(req, res) {
   return success(res, { doctors: results, locationFiltered });
 }
 
+async function listHospitals(req, res) {
+  const { lat, lng } = req.query;
+
+  const hospitalUsers = await User.find({ role: 'hospital', verificationStatus: 'verified' });
+  const verifiedIds = hospitalUsers.map((u) => u._id);
+
+  let hospitalRecords;
+  let locationSorted = false;
+
+  if (lat && lng) {
+    hospitalRecords = await Hospital.find({
+      userId: { $in: verifiedIds },
+      location: {
+        $near: {
+          $geometry: { type: 'Point', coordinates: [Number(lng), Number(lat)] }
+        }
+      }
+    });
+    locationSorted = true;
+  } else {
+    hospitalRecords = await Hospital.find({ userId: { $in: verifiedIds } });
+  }
+
+  const results = hospitalRecords.map((record) => ({
+    hospitalId: record.userId,
+    hospitalName: record.hospitalName,
+    address: record.address,
+    city: record.city
+  }));
+
+  return success(res, { hospitals: results, locationSorted });
+}
+
 module.exports = {
   getProfile: asyncHandler(getProfile),
   updateProfile: asyncHandler(updateProfile),
-  listDoctors: asyncHandler(listDoctors)
+  listDoctors: asyncHandler(listDoctors),
+  listHospitals: asyncHandler(listHospitals)
 };

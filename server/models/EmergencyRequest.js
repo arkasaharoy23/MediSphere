@@ -14,6 +14,8 @@ const emergencyRequestSchema = new mongoose.Schema({
   bloodGroup: { type: String, default: 'unknown' },
   emergencyContactName: { type: String, default: '' },
   emergencyContactPhoneEncrypted: { type: String, default: null },
+  ambulanceId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  hospitalId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   resolvedAt: { type: Date, default: null }
 }, { timestamps: true });
 

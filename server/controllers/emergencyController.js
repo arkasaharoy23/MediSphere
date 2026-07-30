@@ -1,12 +1,46 @@
 const EmergencyRequest = require('../models/EmergencyRequest');
 const Patient = require('../models/Patient');
 const User = require('../models/User');
+const Ambulance = require('../models/Ambulance');
+const Hospital = require('../models/Hospital');
 const { decrypt } = require('../utils/helpers');
 const { success, fail } = require('../utils/response');
 const asyncHandler = require('../utils/asyncHandler');
 
+async function findNearestAmbulance(lat, lng) {
+  const verifiedAmbulanceUsers = await User.find({ role: 'ambulance', verificationStatus: 'verified' });
+  const verifiedIds = verifiedAmbulanceUsers.map((u) => u._id);
+
+  const nearest = await Ambulance.findOne({
+    userId: { $in: verifiedIds },
+    location: {
+      $near: {
+        $geometry: { type: 'Point', coordinates: [lng, lat] }
+      }
+    }
+  });
+
+  return nearest ? nearest.userId : null;
+}
+
+async function findNearestHospital(lat, lng) {
+  const verifiedHospitalUsers = await User.find({ role: 'hospital', verificationStatus: 'verified' });
+  const verifiedIds = verifiedHospitalUsers.map((u) => u._id);
+
+  const nearest = await Hospital.findOne({
+    userId: { $in: verifiedIds },
+    location: {
+      $near: {
+        $geometry: { type: 'Point', coordinates: [lng, lat] }
+      }
+    }
+  });
+
+  return nearest ? nearest.userId : null;
+}
+
 async function triggerSOS(req, res) {
-  const { lat, lng } = req.body;
+  const { lat, lng, hospitalId } = req.body;
 
   if (typeof lat !== 'number' || typeof lng !== 'number') {
     return fail(res, 'A valid location is required to trigger SOS');
@@ -19,31 +53,62 @@ async function triggerSOS(req, res) {
 
   const profile = await Patient.findOne({ userId: req.user.id });
 
+  let resolvedHospitalId = null;
+  if (hospitalId) {
+    const chosenHospital = await User.findOne({ _id: hospitalId, role: 'hospital', verificationStatus: 'verified' });
+    if (chosenHospital) resolvedHospitalId = chosenHospital._id;
+  }
+  if (!resolvedHospitalId) {
+    resolvedHospitalId = await findNearestHospital(lat, lng);
+  }
+
+  const resolvedAmbulanceId = await findNearestAmbulance(lat, lng);
+
   const request = await EmergencyRequest.create({
     patientId: req.user.id,
     location: { lat, lng },
     bloodGroup: profile?.bloodGroup || 'unknown',
     emergencyContactName: profile?.emergencyContactName || '',
-    emergencyContactPhoneEncrypted: profile?.emergencyContactPhoneEncrypted || null
+    emergencyContactPhoneEncrypted: profile?.emergencyContactPhoneEncrypted || null,
+    ambulanceId: resolvedAmbulanceId,
+    hospitalId: resolvedHospitalId
   });
 
-  return success(res, { id: request._id, status: request.status }, 201);
+  return success(res, {
+    id: request._id,
+    status: request.status,
+    ambulanceAssigned: !!resolvedAmbulanceId,
+    hospitalAssigned: !!resolvedHospitalId
+  }, 201);
 }
 
-async function listMine(req, res) {
-  const requests = await EmergencyRequest.find({ patientId: req.user.id }).sort({ createdAt: -1 });
+async function enrichRequest(r) {
+  const [ambulanceRecord, hospitalRecord] = await Promise.all([
+    r.ambulanceId ? Ambulance.findOne({ userId: r.ambulanceId }) : null,
+    r.hospitalId ? Hospital.findOne({ userId: r.hospitalId }) : null
+  ]);
 
-  const results = requests.map((r) => ({
+  return {
     id: r._id,
     location: r.location,
     status: r.status,
     bloodGroup: r.bloodGroup,
     emergencyContactName: r.emergencyContactName,
     emergencyContactPhone: r.emergencyContactPhoneEncrypted ? decrypt(r.emergencyContactPhoneEncrypted) : '',
+    ambulance: ambulanceRecord
+      ? { vehicleNumber: ambulanceRecord.vehicleNumber, driverName: ambulanceRecord.driverName, city: ambulanceRecord.city }
+      : null,
+    hospital: hospitalRecord
+      ? { hospitalName: hospitalRecord.hospitalName, address: hospitalRecord.address }
+      : null,
     createdAt: r.createdAt,
     resolvedAt: r.resolvedAt
-  }));
+  };
+}
 
+async function listMine(req, res) {
+  const requests = await EmergencyRequest.find({ patientId: req.user.id }).sort({ createdAt: -1 });
+  const results = await Promise.all(requests.map(enrichRequest));
   return success(res, results);
 }
 
@@ -76,15 +141,8 @@ async function listActive(req, res) {
   const results = await Promise.all(
     requests.map(async (r) => {
       const patientUser = await User.findById(r.patientId);
-      return {
-        id: r._id,
-        location: r.location,
-        bloodGroup: r.bloodGroup,
-        emergencyContactName: r.emergencyContactName,
-        emergencyContactPhone: r.emergencyContactPhoneEncrypted ? decrypt(r.emergencyContactPhoneEncrypted) : '',
-        patientEmail: patientUser?.email,
-        createdAt: r.createdAt
-      };
+      const base = await enrichRequest(r);
+      return { ...base, patientEmail: patientUser?.email };
     })
   );
 

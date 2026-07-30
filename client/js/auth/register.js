@@ -44,7 +44,9 @@ const ROLE_FIELDS = {
     { name: 'driverLicenseDoc', label: "Driver's license document", type: 'file', required: true },
     { name: 'driverPhoto', label: "Driver's photo", type: 'file', required: true },
     { name: 'driverIdDoc', label: "Driver's ID document", type: 'file', required: true },
-    { name: 'permitDocument', label: 'Ambulance operating permit', type: 'file', required: true }
+    { name: 'permitDocument', label: 'Ambulance operating permit', type: 'file', required: true },
+    { name: 'city', label: 'Base city', type: 'text', required: true },
+    { name: 'location', label: 'Base location', type: 'location', required: true }
   ]
 };
 
@@ -258,7 +260,7 @@ function initSubmitStep() {
 
     if (!state.firebaseUser) return showToast('Please complete account creation first');
 
-    if (['doctor', 'hospital'].includes(state.role)) {
+    if (['doctor', 'hospital', 'ambulance'].includes(state.role)) {
       const latInput = form.querySelector('input[name="lat"]');
       if (!latInput || !latInput.value) {
         return showToast('Please detect your location before submitting');

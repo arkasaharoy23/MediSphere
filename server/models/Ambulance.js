@@ -15,7 +15,14 @@ const ambulanceSchema = new mongoose.Schema({
   driverIdDocUrl: { type: String, required: true },
   driverIdDocPublicId: { type: String, required: true },
   permitDocumentUrl: { type: String, required: true },
-  permitDocumentPublicId: { type: String, required: true }
+  permitDocumentPublicId: { type: String, required: true },
+  city: { type: String, required: true },
+  location: {
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: { type: [Number], required: true }
+  }
 }, { timestamps: true });
+
+ambulanceSchema.index({ location: '2dsphere' });
 
 module.exports = mongoose.model('Ambulance', ambulanceSchema);
