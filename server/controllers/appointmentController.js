@@ -1,5 +1,6 @@
 const Appointment = require('../models/Appointment');
 const Doctor = require('../models/Doctor');
+const Patient = require('../models/Patient');
 const User = require('../models/User');
 const { success, fail } = require('../utils/response');
 const asyncHandler = require('../utils/asyncHandler');
@@ -32,14 +33,23 @@ async function createAppointment(req, res) {
 }
 
 async function listMine(req, res) {
-  const filter = req.user.role === 'doctor' ? { doctorId: req.user.id } : { patientId: req.user.id };
+  const isDoctor = req.user.role === 'doctor';
+  const filter = isDoctor ? { doctorId: req.user.id } : { patientId: req.user.id };
 
   const appointments = await Appointment.find(filter).sort({ date: 1 });
 
   const results = await Promise.all(
     appointments.map(async (appt) => {
       const doctorRecord = await Doctor.findOne({ userId: appt.doctorId });
-      const patientUser = req.user.role === 'doctor' ? await User.findById(appt.patientId) : null;
+
+      let patientName;
+      let patientEmail;
+      if (isDoctor) {
+        const patientUser = await User.findById(appt.patientId);
+        const patientRecord = await Patient.findOne({ userId: appt.patientId });
+        patientEmail = patientUser?.email;
+        patientName = patientRecord?.fullName || patientUser?.email || 'Unknown patient';
+      }
 
       return {
         id: appt._id,
@@ -49,7 +59,8 @@ async function listMine(req, res) {
         status: appt.status,
         doctorName: doctorRecord?.fullName || 'Unknown doctor',
         doctorSpecialization: doctorRecord?.specialization || '',
-        patientEmail: patientUser?.email || undefined
+        patientEmail,
+        patientName
       };
     })
   );
@@ -83,8 +94,54 @@ async function cancelAppointment(req, res) {
   return success(res, { id: appointment._id, status: appointment.status });
 }
 
+async function confirmAppointment(req, res) {
+  const { id } = req.params;
+
+  const appointment = await Appointment.findById(id);
+  if (!appointment) {
+    return fail(res, 'Appointment not found', 404);
+  }
+
+  if (appointment.doctorId.toString() !== req.user.id.toString()) {
+    return fail(res, 'You do not have access to this appointment', 403);
+  }
+
+  if (appointment.status !== 'pending') {
+    return fail(res, 'Only pending appointments can be confirmed');
+  }
+
+  appointment.status = 'confirmed';
+  await appointment.save();
+
+  return success(res, { id: appointment._id, status: appointment.status });
+}
+
+async function completeAppointment(req, res) {
+  const { id } = req.params;
+
+  const appointment = await Appointment.findById(id);
+  if (!appointment) {
+    return fail(res, 'Appointment not found', 404);
+  }
+
+  if (appointment.doctorId.toString() !== req.user.id.toString()) {
+    return fail(res, 'You do not have access to this appointment', 403);
+  }
+
+  if (appointment.status !== 'confirmed') {
+    return fail(res, 'Only confirmed appointments can be marked complete');
+  }
+
+  appointment.status = 'completed';
+  await appointment.save();
+
+  return success(res, { id: appointment._id, status: appointment.status });
+}
+
 module.exports = {
   createAppointment: asyncHandler(createAppointment),
   listMine: asyncHandler(listMine),
-  cancelAppointment: asyncHandler(cancelAppointment)
+  cancelAppointment: asyncHandler(cancelAppointment),
+  confirmAppointment: asyncHandler(confirmAppointment),
+  completeAppointment: asyncHandler(completeAppointment)
 };

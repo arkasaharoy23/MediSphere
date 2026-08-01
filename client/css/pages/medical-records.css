@@ -1,3 +1,62 @@
+.medicine-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: var(--space-3);
+  align-items: end;
+  margin-bottom: var(--space-3);
+}
+
+.medicine-row input {
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-raised);
+  color: var(--color-ink);
+  font-size: 0.88rem;
+}
+
+.medicine-row input:focus {
+  outline: none;
+  border-color: var(--color-teal);
+}
+
+.medicine-row__remove {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-line);
+  color: var(--color-coral);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.medicine-row__remove svg {
+  width: 16px;
+  height: 16px;
+}
+
+.add-medicine-btn {
+  font-size: 0.86rem;
+  color: var(--color-teal);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.add-medicine-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 720px) {
+  .medicine-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .record-list {
   display: flex;
   flex-direction: column;
