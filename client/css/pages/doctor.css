@@ -1,0 +1,47 @@
+.patients-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-raised);
+}
+
+.patients-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+}
+
+.patients-table th,
+.patients-table td {
+  text-align: left;
+  padding: 14px 20px;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.patients-table thead th {
+  background: var(--color-teal-tint);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-teal);
+  font-weight: 600;
+}
+
+.patients-table tbody tr:hover {
+  background: color-mix(in srgb, var(--color-teal-tint) 40%, transparent);
+}
+
+.patients-table tr:last-child td {
+  border-bottom: none;
+}
+
+.blood-group-badge {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--color-coral-tint);
+  color: var(--color-coral);
+}
