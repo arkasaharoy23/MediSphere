@@ -1,10 +1,17 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const upload = require('../middleware/uploadMiddleware');
 const { protect } = require('../middleware/authMiddleware');
 const { register, login } = require('../controllers/authController');
 const { success } = require('../utils/response');
 
 const router = express.Router();
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { ok: false, message: 'Too many attempts, please try again later' }
+});
 
 const registerUpload = upload.fields([
   { name: 'profilePic', maxCount: 1 },
@@ -19,8 +26,8 @@ const registerUpload = upload.fields([
   { name: 'permitDocument', maxCount: 1 }
 ]);
 
-router.post('/register', registerUpload, register);
-router.post('/login', login);
+router.post('/register', authLimiter, registerUpload, register);
+router.post('/login', authLimiter, login);
 router.get('/session', protect, (req, res) => success(res, req.user));
 
 module.exports = router;
