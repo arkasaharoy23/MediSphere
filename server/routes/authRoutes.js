@@ -16,6 +16,7 @@ const authLimiter = rateLimit({
 const registerUpload = upload.fields([
   { name: 'profilePic', maxCount: 1 },
   { name: 'registrationCertificate', maxCount: 1 },
+  { name: 'degreeCertificate', maxCount: 1 },
   { name: 'document1', maxCount: 1 },
   { name: 'document2', maxCount: 1 },
   { name: 'document', maxCount: 1 },

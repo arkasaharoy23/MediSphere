@@ -68,6 +68,13 @@
   font-size: 0.9rem;
 }
 
+.kyc-docs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
 .kyc-docs a {
   display: inline-flex;
   align-items: center;

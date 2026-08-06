@@ -22,33 +22,54 @@ function fieldRow(label, value) {
 }
 
 function buildFields(entry) {
+  const rejectionRow =
+    entry.verificationStatus === 'rejected' && entry.rejectionReason
+      ? fieldRow('Rejection reason', entry.rejectionReason)
+      : '';
+
   if (entry.role === 'doctor') {
-    return fieldRow('Specialization', entry.specialization) + fieldRow('Registration number', entry.registrationNumber);
+    return (
+      rejectionRow +
+      fieldRow('Specialization', entry.specialization) +
+      fieldRow('Degree', entry.degree) +
+      fieldRow('Registration number', entry.registrationNumber)
+    );
   }
   if (entry.role === 'hospital') {
-    return fieldRow('Address', entry.address) + fieldRow('License number', entry.licenseNumber);
+    return rejectionRow + fieldRow('Address', entry.address) + fieldRow('License number', entry.licenseNumber);
   }
   if (entry.role === 'lab') {
-    return fieldRow('License number', entry.licenseNumber);
+    return rejectionRow + fieldRow('License number', entry.licenseNumber);
   }
   if (entry.role === 'pharmacy') {
-    return fieldRow('Drug license number', entry.drugLicenseNumber);
+    return rejectionRow + fieldRow('Drug license number', entry.drugLicenseNumber);
   }
   if (entry.role === 'ambulance') {
-    return fieldRow('Vehicle number', entry.vehicleNumber) + fieldRow('Driver license number', entry.driverLicenseNumber);
+    return (
+      rejectionRow +
+      fieldRow('Vehicle number', entry.vehicleNumber) +
+      fieldRow('Driver license number', entry.driverLicenseNumber)
+    );
   }
-  return '';
+  return rejectionRow;
 }
 
 function buildDocLinks(entry) {
   return entry.documents
-    .map(
-      (doc) => `
+    .map((doc) => {
+      if (!doc.url) {
+        return `
+      <span class="review-docs__missing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
+        ${doc.label} — not on file
+      </span>`;
+      }
+      return `
       <a href="${doc.url}" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
         ${doc.label}
-      </a>`
-    )
+      </a>`;
+    })
     .join('');
 }
 
@@ -113,9 +134,15 @@ function buildCard(entry, role, onDecision) {
   if (rejectBtn) {
     rejectBtn.addEventListener('click', (event) => {
       event.stopPropagation();
-      if (window.confirm(`Reject this ${ROLE_LABELS[role].toLowerCase()} application?`)) {
-        onDecision(entry.userId, 'rejected', card);
+      const reason = window.prompt(
+        `Reason for rejecting this ${ROLE_LABELS[role].toLowerCase()} application? This will be shown to the applicant.`
+      );
+      if (reason === null) return;
+      if (!reason.trim()) {
+        showToast('A rejection reason is required');
+        return;
       }
+      onDecision(entry.userId, 'rejected', card, reason.trim());
     });
   }
 
@@ -145,11 +172,11 @@ async function loadProviders(role, status) {
 
   list.innerHTML = '';
 
-  const handleDecision = async (userId, decision, card) => {
+  const handleDecision = async (userId, decision, card, reason) => {
     const verifyResult = await authFetch(`/api/admin/verify/${userId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ decision })
+      body: JSON.stringify({ decision, reason })
     });
 
     if (!verifyResult.ok) {

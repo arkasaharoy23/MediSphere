@@ -62,7 +62,8 @@ async function protectHandler(req, res, next) {
     role: user.role,
     displayName,
     profilePicUrl: user.profilePicUrl,
-    verificationStatus: user.verificationStatus
+    verificationStatus: user.verificationStatus,
+    rejectionReason: user.rejectionReason
   };
 
   next();

@@ -328,6 +328,22 @@
   height: 15px;
 }
 
+.review-docs__missing {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.86rem;
+  color: var(--color-ink-soft);
+  border: 1px dashed var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.review-docs__missing svg {
+  width: 15px;
+  height: 15px;
+}
+
 .review-actions {
   display: flex;
   gap: var(--space-3);

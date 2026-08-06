@@ -38,4 +38,4 @@ const DEGREES = [
   'DCH'
 ];
 
-module.exports = { SPECIALIZATIONS, DEGREES };
+export { SPECIALIZATIONS, DEGREES };

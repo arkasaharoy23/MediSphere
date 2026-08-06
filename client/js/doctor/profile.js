@@ -1,6 +1,17 @@
 import { initDashboard } from '../utils/dashboardAuth.js';
 import { authFetch } from '../services/apiService.js';
 import { showToast } from '../components/toast.js';
+import { SPECIALIZATIONS } from '../utils/medicalOptions.js';
+
+function populateSpecializationOptions() {
+  const select = document.querySelector('#specialization');
+  SPECIALIZATIONS.forEach((value) => {
+    const option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  });
+}
 
 function populateForm(profile) {
   if (!profile) return;
@@ -9,6 +20,14 @@ function populateForm(profile) {
   form.fullName.value = profile.fullName || '';
   form.specialization.value = profile.specialization || '';
   form.city.value = profile.city || '';
+
+  const degreeEl = document.querySelector('[data-degree]');
+  if (degreeEl) degreeEl.textContent = profile.degree || '—';
+
+  const degreeCertLinkEl = document.querySelector('[data-degree-certificate-link]');
+  if (degreeCertLinkEl && profile.degreeCertificateViewUrl) {
+    degreeCertLinkEl.href = profile.degreeCertificateViewUrl;
+  }
 
   const registrationNumberEl = document.querySelector('[data-registration-number]');
   if (registrationNumberEl) registrationNumberEl.textContent = profile.registrationNumber || '—';
@@ -98,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDashboard({
     expectedRole: 'doctor',
     onReady: () => {
+      populateSpecializationOptions();
       initForm();
       initLocationDetect();
       loadProfile();

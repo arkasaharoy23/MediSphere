@@ -16,18 +16,28 @@ function renderAvatar(profilePicUrl, email) {
   }
 }
 
-function renderStatusBanner(verificationStatus) {
+function renderStatusBanner(session) {
   const banner = document.querySelector('[data-status-banner]');
   if (!banner) return;
 
   const textEl = banner.querySelector('[data-status-text]');
+  const { verificationStatus, rejectionReason, role } = session;
 
   if (verificationStatus === 'pending') {
     banner.classList.add('dash-banner--pending');
     textEl.textContent = 'Your account is pending admin verification. Some features are unavailable until you are approved.';
   } else if (verificationStatus === 'rejected') {
     banner.classList.add('dash-banner--pending');
-    textEl.textContent = 'Your verification was not approved. Please contact support or update your documents.';
+    const reasonText = rejectionReason ? ` Reason: ${rejectionReason}` : '';
+    textEl.textContent = `Your verification was not approved.${reasonText}`;
+
+    if (role === 'doctor') {
+      const link = document.createElement('a');
+      link.href = '../doctor/reapply.html';
+      link.className = 'dash-banner__action';
+      link.textContent = 'Update & resubmit';
+      banner.appendChild(link);
+    }
   } else {
     textEl.textContent = 'Your account is verified and ready to use.';
   }
@@ -60,7 +70,7 @@ function initDashboard({ expectedRole, onReady }) {
     if (nameEl) nameEl.textContent = session.data.displayName || session.data.email;
 
     renderAvatar(session.data.profilePicUrl, session.data.email);
-    renderStatusBanner(session.data.verificationStatus);
+    renderStatusBanner(session.data);
 
     if (onReady) onReady(session.data);
   });

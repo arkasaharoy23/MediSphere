@@ -6,12 +6,15 @@ import { showToast } from '../components/toast.js';
 import { initTheme } from '../utils/theme.js';
 import { API_BASE_URL } from '../config/api.js';
 import { initPasswordToggles } from '../components/passwordToggle.js';
+import { SPECIALIZATIONS, DEGREES } from '../utils/medicalOptions.js';
 
 const ROLE_FIELDS = {
   patient: [],
   doctor: [
     { name: 'fullName', label: 'Full name', type: 'text', required: true },
-    { name: 'specialization', label: 'Specialization', type: 'text', required: true },
+    { name: 'specialization', label: 'Specialization', type: 'select', options: SPECIALIZATIONS, required: true },
+    { name: 'degree', label: 'Medical degree', type: 'select', options: DEGREES, required: true },
+    { name: 'degreeCertificate', label: 'Degree certificate', type: 'file', required: true },
     { name: 'registrationNumber', label: 'State medical council registration number', type: 'text', required: true },
     { name: 'registrationCertificate', label: 'Registration certificate', type: 'file', required: true },
     { name: 'city', label: 'City of practice', type: 'text', required: true },
@@ -102,6 +105,38 @@ function buildFileField(field) {
   return wrapper;
 }
 
+function buildSelectField(field) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'form-field';
+
+  const label = document.createElement('label');
+  label.textContent = field.label;
+  label.setAttribute('for', field.name);
+  wrapper.appendChild(label);
+
+  const select = document.createElement('select');
+  select.id = field.name;
+  select.name = field.name;
+  if (field.required) select.required = true;
+
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = `Select ${field.label.toLowerCase()}`;
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  select.appendChild(placeholder);
+
+  field.options.forEach((optionValue) => {
+    const option = document.createElement('option');
+    option.value = optionValue;
+    option.textContent = optionValue;
+    select.appendChild(option);
+  });
+
+  wrapper.appendChild(select);
+  return wrapper;
+}
+
 function buildTextField(field) {
   const wrapper = document.createElement('div');
   wrapper.className = 'form-field';
@@ -185,6 +220,7 @@ function renderRoleFields(role) {
     let node;
     if (field.type === 'file') node = buildFileField(field);
     else if (field.type === 'location') node = buildLocationField(field);
+    else if (field.type === 'select') node = buildSelectField(field);
     else node = buildTextField(field);
     container.appendChild(node);
   });

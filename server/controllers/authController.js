@@ -6,6 +6,7 @@ const Lab = require('../models/Lab');
 const Pharmacy = require('../models/Pharmacy');
 const Ambulance = require('../models/Ambulance');
 const { encrypt, hashForLookup } = require('../utils/helpers');
+const { SPECIALIZATIONS, DEGREES } = require('../utils/constants');
 const { uploadBuffer } = require('../services/cloudinaryService');
 const { success, fail } = require('../utils/response');
 const { isValidIndianPhone } = require('../utils/validators');
@@ -14,15 +15,29 @@ const asyncHandler = require('../utils/asyncHandler');
 async function createRoleRecord(role, userId, body, files) {
   if (role === 'doctor') {
     const cert = files?.registrationCertificate?.[0];
+    const degreeCert = files?.degreeCertificate?.[0];
     if (!cert) throw new Error('Registration certificate is required');
+    if (!degreeCert) throw new Error('Degree certificate is required');
+    if (!SPECIALIZATIONS.includes(body.specialization)) {
+      throw new Error('Select a valid specialization from the list');
+    }
+    if (!DEGREES.includes(body.degree)) {
+      throw new Error('Select a valid medical degree from the list');
+    }
     if (!body.city || !body.lat || !body.lng) {
       throw new Error('Practice location is required — please detect your location before submitting');
     }
-    const certUpload = await uploadBuffer(cert.buffer, 'doctors');
+    const [certUpload, degreeCertUpload] = await Promise.all([
+      uploadBuffer(cert.buffer, 'doctors'),
+      uploadBuffer(degreeCert.buffer, 'doctors')
+    ]);
     return Doctor.create({
       userId,
       fullName: body.fullName,
       specialization: body.specialization,
+      degree: body.degree,
+      degreeCertificateUrl: degreeCertUpload.url,
+      degreeCertificatePublicId: degreeCertUpload.publicId,
       registrationNumberEncrypted: encrypt(body.registrationNumber),
       registrationNumberHash: hashForLookup(body.registrationNumber),
       registrationCertificateUrl: certUpload.url,

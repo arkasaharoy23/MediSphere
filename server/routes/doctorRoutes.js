@@ -1,13 +1,20 @@
 const express = require('express');
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
-const { getProfile, updateProfile, listMyPatients } = require('../controllers/doctorController');
+const upload = require('../middleware/uploadMiddleware');
+const { getProfile, updateProfile, resubmitApplication, listMyPatients } = require('../controllers/doctorController');
 
 const router = express.Router();
+
+const resubmitUpload = upload.fields([
+  { name: 'registrationCertificate', maxCount: 1 },
+  { name: 'degreeCertificate', maxCount: 1 }
+]);
 
 router.use(protect, authorizeRoles('doctor'));
 
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
+router.put('/resubmit', resubmitUpload, resubmitApplication);
 router.get('/patients', listMyPatients);
 
 module.exports = router;

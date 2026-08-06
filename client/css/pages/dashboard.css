@@ -36,6 +36,15 @@
   color: var(--color-coral);
 }
 
+.dash-banner__action {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--color-coral);
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
 .dash-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

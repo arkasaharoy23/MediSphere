@@ -18,9 +18,11 @@ function buildRoleView(role, record) {
     return {
       fullName: record.fullName,
       specialization: record.specialization,
+      degree: record.degree,
       registrationNumber: decrypt(record.registrationNumberEncrypted),
       documents: [
-        { label: 'Registration certificate', url: getSignedViewUrl(record.registrationCertificatePublicId) }
+        { label: 'Registration certificate', url: getSignedViewUrl(record.registrationCertificatePublicId) },
+        { label: 'Degree certificate', url: getSignedViewUrl(record.degreeCertificatePublicId) }
       ]
     };
   }
@@ -96,6 +98,7 @@ async function listByRole(req, res) {
         email: user.email,
         phone: decrypt(user.phoneEncrypted),
         verificationStatus: user.verificationStatus,
+        rejectionReason: user.rejectionReason,
         isActive: user.isActive,
         submittedAt: user.createdAt,
         ...buildRoleView(user.role, record)
@@ -108,10 +111,14 @@ async function listByRole(req, res) {
 
 async function verifyUser(req, res) {
   const { userId } = req.params;
-  const { decision } = req.body;
+  const { decision, reason } = req.body;
 
   if (!['approved', 'rejected'].includes(decision)) {
     return fail(res, 'decision must be "approved" or "rejected"');
+  }
+
+  if (decision === 'rejected' && !reason?.trim()) {
+    return fail(res, 'A rejection reason is required');
   }
 
   const user = await User.findById(userId);
@@ -120,6 +127,7 @@ async function verifyUser(req, res) {
   }
 
   user.verificationStatus = decision === 'approved' ? 'verified' : 'rejected';
+  user.rejectionReason = decision === 'rejected' ? reason.trim() : null;
   await user.save();
 
   return success(res, { userId: user._id, verificationStatus: user.verificationStatus });
