@@ -2,7 +2,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const upload = require('../middleware/uploadMiddleware');
 const { protect } = require('../middleware/authMiddleware');
-const { register, login } = require('../controllers/authController');
+const { register, login, forgotPassword } = require('../controllers/authController');
 const { success } = require('../utils/response');
 
 const router = express.Router();
@@ -29,6 +29,7 @@ const registerUpload = upload.fields([
 
 router.post('/register', authLimiter, registerUpload, register);
 router.post('/login', authLimiter, login);
+router.post('/forgot-password', authLimiter, forgotPassword);
 router.get('/session', protect, (req, res) => success(res, req.user));
 
 module.exports = router;

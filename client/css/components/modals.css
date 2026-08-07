@@ -46,3 +46,63 @@
   margin-top: var(--space-2);
   width: 100%;
 }
+
+.modal-card--prompt {
+  text-align: left;
+  align-items: stretch;
+}
+
+.modal-card--prompt h3,
+.modal-card--prompt p {
+  text-align: center;
+}
+
+.modal-card__icon--danger {
+  background: var(--color-coral-tint);
+  color: var(--color-coral);
+}
+
+.modal-card__input {
+  width: 100%;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: inherit;
+  font-size: 0.92rem;
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 76px;
+  transition: border-color 0.15s var(--ease-out);
+}
+
+.modal-card__input:focus {
+  outline: none;
+  border-color: var(--color-teal);
+}
+
+.modal-card__input--error {
+  border-color: var(--color-coral);
+}
+
+.modal-card__error {
+  display: none;
+  font-size: 0.78rem;
+  color: var(--color-coral);
+  margin-top: -6px;
+}
+
+.modal-card__error--visible {
+  display: block;
+}
+
+.modal-card__actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.modal-card__actions .btn {
+  margin-top: 0;
+  flex: 1;
+}

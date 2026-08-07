@@ -1,5 +1,6 @@
 import { authFetch } from '../services/apiService.js';
 import { showToast } from '../components/toast.js';
+import { showPromptModal } from '../components/modal.js';
 
 const ROLE_LABELS = {
   doctor: 'Doctor',
@@ -132,17 +133,17 @@ function buildCard(entry, role, onDecision) {
   }
 
   if (rejectBtn) {
-    rejectBtn.addEventListener('click', (event) => {
+    rejectBtn.addEventListener('click', async (event) => {
       event.stopPropagation();
-      const reason = window.prompt(
-        `Reason for rejecting this ${ROLE_LABELS[role].toLowerCase()} application? This will be shown to the applicant.`
-      );
+      const reason = await showPromptModal({
+        title: 'Reject application',
+        message: `This reason will be shown to the ${ROLE_LABELS[role].toLowerCase()} applicant.`,
+        placeholder: 'e.g. Registration certificate is unreadable, please re-upload a clearer scan',
+        confirmLabel: 'Reject application',
+        tone: 'danger'
+      });
       if (reason === null) return;
-      if (!reason.trim()) {
-        showToast('A rejection reason is required');
-        return;
-      }
-      onDecision(entry.userId, 'rejected', card, reason.trim());
+      onDecision(entry.userId, 'rejected', card, reason);
     });
   }
 

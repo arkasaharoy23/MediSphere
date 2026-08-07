@@ -8,6 +8,8 @@ const Ambulance = require('../models/Ambulance');
 const { encrypt, hashForLookup } = require('../utils/helpers');
 const { SPECIALIZATIONS, DEGREES } = require('../utils/constants');
 const { uploadBuffer } = require('../services/cloudinaryService');
+const { sendPasswordResetEmail } = require('../services/emailService');
+const config = require('../config/env');
 const { success, fail } = require('../utils/response');
 const { isValidIndianPhone } = require('../utils/validators');
 const asyncHandler = require('../utils/asyncHandler');
@@ -223,4 +225,32 @@ async function login(req, res) {
   return success(res, { role: user.role, verificationStatus: user.verificationStatus });
 }
 
-module.exports = { register: asyncHandler(register), login: asyncHandler(login) };
+async function forgotPassword(req, res) {
+  const { email } = req.body;
+
+  if (!email) {
+    return fail(res, 'Email is required');
+  }
+
+  try {
+    const resetLink = await admin.auth().generatePasswordResetLink(email, {
+      url: `${config.clientUrls[0]}/client/pages/auth/reset-password.html`,
+      handleCodeInApp: true
+    });
+    await sendPasswordResetEmail(email, resetLink);
+  } catch (err) {
+    if (err.code !== 'auth/user-not-found') {
+      console.error('Password reset email failed:', err.message);
+    }
+    // Deliberately swallow errors here (including "user not found") so this
+    // endpoint always returns the same response — prevents email enumeration.
+  }
+
+  return success(res, { message: 'If an account exists for this email, a reset link has been sent' });
+}
+
+module.exports = {
+  register: asyncHandler(register),
+  login: asyncHandler(login),
+  forgotPassword: asyncHandler(forgotPassword)
+};

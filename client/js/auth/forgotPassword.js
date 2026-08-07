@@ -1,20 +1,13 @@
-import { sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import { auth } from '../config/firebase.js';
 import { isValidEmail } from '../utils/validators.js';
 import { showToast } from '../components/toast.js';
 import { initTheme } from '../utils/theme.js';
+import { API_BASE_URL } from '../config/api.js';
 
 function showSentState(email) {
   document.querySelector('[data-forgot-form]').setAttribute('hidden', '');
   const status = document.querySelector('[data-forgot-status]');
   status.querySelector('[data-forgot-email]').textContent = email;
   status.removeAttribute('hidden');
-}
-
-function friendlyError(err) {
-  if (err.code === 'auth/invalid-email') return 'Enter a valid email address';
-  if (err.code === 'auth/too-many-requests') return 'Too many attempts, please try again later';
-  return err.message.replace('Firebase: ', '');
 }
 
 function initForgotForm() {
@@ -31,14 +24,21 @@ function initForgotForm() {
     submitBtn.textContent = 'Sending...';
 
     try {
-      await sendPasswordResetEmail(auth, email);
-      showSentState(email);
-    } catch (err) {
-      if (err.code === 'auth/user-not-found') {
-        showSentState(email);
+      const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const result = await response.json();
+
+      if (!result.ok) {
+        showToast(result.message || 'Something went wrong, please try again');
         return;
       }
-      showToast(friendlyError(err));
+
+      showSentState(email);
+    } catch (err) {
+      showToast('Could not reach the server, please try again');
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send reset link';

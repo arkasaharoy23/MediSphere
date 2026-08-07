@@ -14,9 +14,9 @@ const ROLE_FIELDS = {
     { name: 'fullName', label: 'Full name', type: 'text', required: true },
     { name: 'specialization', label: 'Specialization', type: 'select', options: SPECIALIZATIONS, required: true },
     { name: 'degree', label: 'Medical degree', type: 'select', options: DEGREES, required: true },
-    { name: 'degreeCertificate', label: 'Degree certificate', type: 'file', required: true },
+    { name: 'degreeCertificate', label: 'Degree certificate', type: 'file', required: true, accept: 'image/jpeg', acceptLabel: 'JPG only' },
     { name: 'registrationNumber', label: 'State medical council registration number', type: 'text', required: true },
-    { name: 'registrationCertificate', label: 'Registration certificate', type: 'file', required: true },
+    { name: 'registrationCertificate', label: 'Registration certificate', type: 'file', required: true, accept: 'image/jpeg', acceptLabel: 'JPG only' },
     { name: 'city', label: 'City of practice', type: 'text', required: true },
     { name: 'location', label: 'Practice location', type: 'location', required: true }
   ],
@@ -67,7 +67,7 @@ function goToStep(stepNumber) {
   });
 }
 
-function buildFileField(field) {
+function buildFileField(field, onValid) {
   const wrapper = document.createElement('div');
   wrapper.className = 'form-field';
 
@@ -81,19 +81,39 @@ function buildFileField(field) {
   const icon = document.createElement('span');
   icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke-linejoin="round"/><path d="M14 2V8H20" stroke-linejoin="round"/></svg>';
 
+  const accept = field.accept || 'image/jpeg,image/png,image/webp,application/pdf';
+  const acceptLabel = field.acceptLabel || 'JPG, PNG, or PDF';
+
   const textSpan = document.createElement('span');
-  textSpan.textContent = 'Choose a file (JPG, PNG, or PDF)';
+  textSpan.textContent = `Choose a file (${acceptLabel})`;
 
   const input = document.createElement('input');
   input.type = 'file';
   input.name = field.name;
-  input.accept = 'image/jpeg,image/png,image/webp,application/pdf';
+  input.accept = accept;
   if (field.required) input.required = true;
 
+  let triggered = false;
+
   input.addEventListener('change', () => {
-    if (isFileSelected(input)) {
-      textSpan.textContent = input.files[0].name;
-      fileLabel.setAttribute('data-filled', 'true');
+    if (!isFileSelected(input)) return;
+
+    const file = input.files[0];
+    const allowedTypes = accept.split(',');
+    if (!allowedTypes.includes(file.type)) {
+      input.value = '';
+      fileLabel.removeAttribute('data-filled');
+      textSpan.textContent = `Choose a file (${acceptLabel})`;
+      showToast(`${field.label} must be a ${acceptLabel} file`);
+      return;
+    }
+
+    textSpan.textContent = file.name;
+    fileLabel.setAttribute('data-filled', 'true');
+
+    if (!triggered) {
+      triggered = true;
+      onValid?.();
     }
   });
 
@@ -105,7 +125,7 @@ function buildFileField(field) {
   return wrapper;
 }
 
-function buildSelectField(field) {
+function buildSelectField(field, onValid) {
   const wrapper = document.createElement('div');
   wrapper.className = 'form-field';
 
@@ -133,11 +153,19 @@ function buildSelectField(field) {
     select.appendChild(option);
   });
 
+  let triggered = false;
+  select.addEventListener('change', () => {
+    if (select.value && !triggered) {
+      triggered = true;
+      onValid?.();
+    }
+  });
+
   wrapper.appendChild(select);
   return wrapper;
 }
 
-function buildTextField(field) {
+function buildTextField(field, onValid) {
   const wrapper = document.createElement('div');
   wrapper.className = 'form-field';
 
@@ -152,11 +180,19 @@ function buildTextField(field) {
   input.name = field.name;
   if (field.required) input.required = true;
 
+  let triggered = false;
+  input.addEventListener('input', () => {
+    if (input.value.trim() && !triggered) {
+      triggered = true;
+      onValid?.();
+    }
+  });
+
   wrapper.appendChild(input);
   return wrapper;
 }
 
-function buildLocationField(field) {
+function buildLocationField(field, onValid) {
   const wrapper = document.createElement('div');
   wrapper.className = 'form-field';
 
@@ -180,6 +216,8 @@ function buildLocationField(field) {
   lngInput.type = 'hidden';
   lngInput.name = 'lng';
 
+  let triggered = false;
+
   button.addEventListener('click', () => {
     if (!navigator.geolocation) {
       statusText.textContent = 'Your browser does not support location detection.';
@@ -196,6 +234,11 @@ function buildLocationField(field) {
         statusText.textContent = `Location captured (${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)})`;
         button.disabled = false;
         button.textContent = 'Re-detect location';
+
+        if (!triggered) {
+          triggered = true;
+          onValid?.();
+        }
       },
       () => {
         statusText.textContent = 'Could not get your location. Please allow location access and try again.';
@@ -214,16 +257,36 @@ function buildLocationField(field) {
 
 function renderRoleFields(role) {
   const container = document.querySelector('[data-role-fields]');
+  const submitBtn = document.querySelector('[data-details-form] [type="submit"]');
   container.innerHTML = '';
 
-  ROLE_FIELDS[role].forEach((field) => {
-    let node;
-    if (field.type === 'file') node = buildFileField(field);
-    else if (field.type === 'location') node = buildLocationField(field);
-    else if (field.type === 'select') node = buildSelectField(field);
-    else node = buildTextField(field);
-    container.appendChild(node);
-  });
+  const fields = ROLE_FIELDS[role];
+  if (submitBtn) submitBtn.disabled = fields.length > 0;
+
+  renderNextField(container, fields, 0);
+}
+
+function renderNextField(container, fields, index) {
+  if (index >= fields.length) {
+    const submitBtn = document.querySelector('[data-details-form] [type="submit"]');
+    if (submitBtn) submitBtn.disabled = false;
+    return;
+  }
+
+  const field = fields[index];
+  const onValid = () => renderNextField(container, fields, index + 1);
+
+  let node;
+  if (field.type === 'file') node = buildFileField(field, onValid);
+  else if (field.type === 'location') node = buildLocationField(field, onValid);
+  else if (field.type === 'select') node = buildSelectField(field, onValid);
+  else node = buildTextField(field, onValid);
+
+  node.classList.add('form-field--reveal');
+  container.appendChild(node);
+
+  const focusable = node.querySelector('input:not([type="hidden"]), select');
+  focusable?.focus();
 }
 
 function initRoleSelect() {

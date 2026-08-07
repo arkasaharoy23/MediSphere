@@ -19,10 +19,19 @@ function initFileField(inputId, labelSelector, textSelector) {
   const textSpan = document.querySelector(textSelector);
 
   input.addEventListener('change', () => {
-    if (isFileSelected(input)) {
-      textSpan.textContent = input.files[0].name;
-      label.setAttribute('data-filled', 'true');
+    if (!isFileSelected(input)) return;
+
+    const file = input.files[0];
+    if (file.type !== 'image/jpeg') {
+      input.value = '';
+      label.removeAttribute('data-filled');
+      textSpan.textContent = 'Choose a file (JPG only)';
+      showToast('Please upload a JPG file');
+      return;
     }
+
+    textSpan.textContent = file.name;
+    label.setAttribute('data-filled', 'true');
   });
 }
 
