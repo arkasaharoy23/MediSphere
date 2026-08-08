@@ -84,31 +84,24 @@ async function removeDoctorAffiliation(req, res) {
 }
 
 async function listHospitalAppointments(req, res) {
-  const affiliatedDoctors = await Doctor.find({ hospitalId: req.user.id }).select('userId fullName specialization');
-  const doctorIds = affiliatedDoctors.map((d) => d.userId);
-
-  if (doctorIds.length === 0) {
-    return success(res, []);
-  }
-
-  const doctorLookup = new Map(affiliatedDoctors.map((d) => [d.userId.toString(), d]));
-
-  const appointments = await Appointment.find({ doctorId: { $in: doctorIds } })
+  const appointments = await Appointment.find({ hospitalId: req.user.id, visitLocation: 'hospital' })
     .sort({ date: 1 })
     .populate('patientId', 'email');
 
-  const results = appointments.map((appt) => {
-    const doctorRecord = doctorLookup.get(appt.doctorId.toString());
-    return {
-      id: appt._id,
-      date: appt.date,
-      timeSlot: appt.timeSlot,
-      status: appt.status,
-      doctorName: doctorRecord?.fullName || 'Unknown doctor',
-      doctorSpecialization: doctorRecord?.specialization || '',
-      patientEmail: appt.patientId?.email || 'Unknown patient'
-    };
-  });
+  const results = await Promise.all(
+    appointments.map(async (appt) => {
+      const doctorRecord = await Doctor.findOne({ userId: appt.doctorId });
+      return {
+        id: appt._id,
+        date: appt.date,
+        timeSlot: appt.timeSlot,
+        status: appt.status,
+        doctorName: doctorRecord?.fullName || 'Unknown doctor',
+        doctorSpecialization: doctorRecord?.specialization || '',
+        patientEmail: appt.patientId?.email || 'Unknown patient'
+      };
+    })
+  );
 
   return success(res, results);
 }

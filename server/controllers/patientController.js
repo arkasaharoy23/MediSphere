@@ -78,12 +78,24 @@ async function listDoctors(req, res) {
     doctorRecords = await Doctor.find({ userId: { $in: verifiedIds } });
   }
 
-  const results = doctorRecords.map((record) => ({
-    doctorId: record.userId,
-    fullName: record.fullName,
-    specialization: record.specialization,
-    city: record.city
-  }));
+  const results = await Promise.all(
+    doctorRecords.map(async (record) => {
+      let hospitalName = null;
+      if (record.hospitalId) {
+        const hospitalRecord = await Hospital.findOne({ userId: record.hospitalId });
+        hospitalName = hospitalRecord?.hospitalName || null;
+      }
+
+      return {
+        doctorId: record.userId,
+        fullName: record.fullName,
+        specialization: record.specialization,
+        city: record.city,
+        hospitalId: record.hospitalId || null,
+        hospitalName
+      };
+    })
+  );
 
   return success(res, { doctors: results, locationFiltered });
 }

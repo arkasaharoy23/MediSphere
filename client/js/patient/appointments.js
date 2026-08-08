@@ -3,6 +3,25 @@ import { authFetch } from '../services/apiService.js';
 import { showToast } from '../components/toast.js';
 
 let currentLocation = null;
+let loadedDoctors = [];
+
+function updateVisitLocationField() {
+  const select = document.querySelector('[data-doctor-select]');
+  const field = document.querySelector('[data-visit-location-field]');
+  const hospitalOption = document.querySelector('[data-hospital-option]');
+  const visitSelect = document.querySelector('#visitLocation');
+
+  const doctor = loadedDoctors.find((d) => d.doctorId === select.value);
+
+  if (!doctor || !doctor.hospitalId) {
+    field.hidden = true;
+    visitSelect.value = 'clinic';
+    return;
+  }
+
+  hospitalOption.textContent = `Visit at ${doctor.hospitalName || 'the hospital'}`;
+  field.hidden = false;
+}
 
 async function loadDoctors(radiusKm) {
   const select = document.querySelector('[data-doctor-select]');
@@ -23,6 +42,7 @@ async function loadDoctors(radiusKm) {
   }
 
   const { doctors, locationFiltered } = result.data;
+  loadedDoctors = doctors;
 
   if (doctors.length === 0) {
     select.innerHTML = `<option value="">No doctors found ${locationFiltered ? 'in this radius' : 'yet'}</option>`;
@@ -37,6 +57,8 @@ async function loadDoctors(radiusKm) {
       select.appendChild(option);
     });
   }
+
+  updateVisitLocationField();
 
   if (noteEl) {
     noteEl.textContent = locationFiltered
@@ -100,6 +122,7 @@ function buildApptCard(appt) {
     <div class="appt-card__info">
       <h3>${appt.doctorName}${appt.doctorSpecialization ? ' — ' + appt.doctorSpecialization : ''}</h3>
       <p>${dateLabel} at ${appt.timeSlot}${appt.reason ? ' · ' + appt.reason : ''}</p>
+      <p>${appt.visitLocation === 'hospital' ? `At ${appt.hospitalName || 'the hospital'}` : 'At the clinic'}</p>
     </div>
     <div class="appt-card__meta">
       <span class="${statusBadgeClass(appt.status)}">${appt.status}</span>
@@ -142,6 +165,11 @@ async function loadAppointments() {
   result.data.forEach((appt) => list.appendChild(buildApptCard(appt)));
 }
 
+function initDoctorSelect() {
+  const select = document.querySelector('[data-doctor-select]');
+  select.addEventListener('change', updateVisitLocationField);
+}
+
 function initBookingForm() {
   const form = document.querySelector('[data-booking-form]');
 
@@ -152,6 +180,7 @@ function initBookingForm() {
     const date = form.date.value;
     const timeSlot = form.timeSlot.value;
     const reason = form.reason.value;
+    const visitLocation = form.visitLocation.value;
 
     if (!doctorId) return showToast('Please choose a doctor');
     if (!date) return showToast('Please choose a date');
@@ -164,7 +193,7 @@ function initBookingForm() {
     const result = await authFetch('/api/appointments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ doctorId, date, timeSlot, reason })
+      body: JSON.stringify({ doctorId, date, timeSlot, reason, visitLocation })
     });
 
     submitBtn.disabled = false;
@@ -177,6 +206,7 @@ function initBookingForm() {
 
     showToast('Appointment requested', 'success');
     form.reset();
+    updateVisitLocationField();
     loadAppointments();
   });
 }
@@ -187,6 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onReady: () => {
       detectLocationAndLoad(25);
       initRadiusSelect();
+      initDoctorSelect();
       initBookingForm();
       loadAppointments();
     }

@@ -4,6 +4,10 @@
   gap: var(--space-3);
 }
 
+.form-card {
+  max-width: none;
+}
+
 .hosp-note {
   font-size: 0.86rem;
   color: var(--color-ink-soft);
@@ -138,4 +142,12 @@
   color: var(--color-ink);
   padding: 8px 10px;
   font-size: 0.9rem;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.bed-card__actions input::-webkit-inner-spin-button,
+.bed-card__actions input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

@@ -36,6 +36,7 @@ function buildApptCard(appt) {
     <div class="appt-card__info">
       <h3>${appt.patientName}</h3>
       <p>${dateLabel} at ${appt.timeSlot}${appt.reason ? ' · ' + appt.reason : ''}</p>
+      <p>${appt.visitLocation === 'hospital' ? `At ${appt.hospitalName || 'the hospital'}` : 'At your clinic'}</p>
     </div>
     <div class="appt-card__meta">
       <span class="${statusBadgeClass(appt.status)}">${appt.status}</span>

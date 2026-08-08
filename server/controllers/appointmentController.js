@@ -1,12 +1,13 @@
 const Appointment = require('../models/Appointment');
 const Doctor = require('../models/Doctor');
 const Patient = require('../models/Patient');
+const Hospital = require('../models/Hospital');
 const User = require('../models/User');
 const { success, fail } = require('../utils/response');
 const asyncHandler = require('../utils/asyncHandler');
 
 async function createAppointment(req, res) {
-  const { doctorId, date, timeSlot, reason } = req.body;
+  const { doctorId, date, timeSlot, reason, visitLocation } = req.body;
 
   if (!doctorId || !date || !timeSlot) {
     return fail(res, 'doctorId, date, and timeSlot are required');
@@ -21,13 +22,24 @@ async function createAppointment(req, res) {
     return fail(res, 'Selected doctor is not available for booking', 404);
   }
 
-  const appointment = await Appointment.create({
+  const appointmentData = {
     patientId: req.user.id,
     doctorId,
     date,
     timeSlot,
     reason: reason || ''
-  });
+  };
+
+  if (visitLocation === 'hospital') {
+    const doctorRecord = await Doctor.findOne({ userId: doctorId });
+    if (!doctorRecord?.hospitalId) {
+      return fail(res, 'This doctor is not currently affiliated with a hospital');
+    }
+    appointmentData.visitLocation = 'hospital';
+    appointmentData.hospitalId = doctorRecord.hospitalId;
+  }
+
+  const appointment = await Appointment.create(appointmentData);
 
   return success(res, appointment, 201);
 }
@@ -41,6 +53,12 @@ async function listMine(req, res) {
   const results = await Promise.all(
     appointments.map(async (appt) => {
       const doctorRecord = await Doctor.findOne({ userId: appt.doctorId });
+
+      let hospitalName = null;
+      if (appt.visitLocation === 'hospital' && appt.hospitalId) {
+        const hospitalRecord = await Hospital.findOne({ userId: appt.hospitalId });
+        hospitalName = hospitalRecord?.hospitalName || null;
+      }
 
       let patientName;
       let patientEmail;
@@ -57,6 +75,8 @@ async function listMine(req, res) {
         timeSlot: appt.timeSlot,
         reason: appt.reason,
         status: appt.status,
+        visitLocation: appt.visitLocation,
+        hospitalName,
         doctorName: doctorRecord?.fullName || 'Unknown doctor',
         doctorSpecialization: doctorRecord?.specialization || '',
         patientEmail,

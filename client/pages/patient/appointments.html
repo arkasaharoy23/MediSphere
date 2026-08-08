@@ -113,6 +113,14 @@
 
             <small data-location-note>Detecting your location to find nearby doctors...</small>
 
+            <div class="form-field" data-visit-location-field hidden>
+              <label for="visitLocation">Where would you like to visit?</label>
+              <select id="visitLocation" name="visitLocation">
+                <option value="clinic">See the doctor personally (at their clinic)</option>
+                <option value="hospital" data-hospital-option>Visit at the hospital</option>
+              </select>
+            </div>
+
             <div class="form-row">
               <div class="form-field">
                 <label for="date">Preferred date</label>
