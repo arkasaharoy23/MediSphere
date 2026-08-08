@@ -19,7 +19,16 @@ const hospitalSchema = new mongoose.Schema({
   location: {
     type: { type: String, enum: ['Point'], default: 'Point' },
     coordinates: { type: [Number], required: true }
-  }
+  },
+  departments: [{
+    name: { type: String, required: true },
+    description: { type: String, default: '' }
+  }],
+  beds: [{
+    category: { type: String, required: true },
+    total: { type: Number, required: true, min: 0 },
+    available: { type: Number, required: true, min: 0 }
+  }]
 }, { timestamps: true });
 
 hospitalSchema.index({ location: '2dsphere' });

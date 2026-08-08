@@ -10,6 +10,7 @@ const emergencyRoutes = require('./routes/emergencyRoutes');
 const medicalRecordRoutes = require('./routes/medicalRecordRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
 const prescriptionRoutes = require('./routes/prescriptionRoutes');
+const hospitalRoutes = require('./routes/hospitalRoutes');
 const notFoundMiddleware = require('./middleware/notFoundMiddleware');
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -38,6 +39,7 @@ app.use('/api/emergency', emergencyRoutes);
 app.use('/api/records', medicalRecordRoutes);
 app.use('/api/doctor', doctorRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
+app.use('/api/hospital', hospitalRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

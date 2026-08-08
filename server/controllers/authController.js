@@ -23,8 +23,12 @@ async function createRoleRecord(role, userId, body, files) {
     if (!SPECIALIZATIONS.includes(body.specialization)) {
       throw new Error('Select a valid specialization from the list');
     }
-    if (!DEGREES.includes(body.degree)) {
-      throw new Error('Select a valid medical degree from the list');
+    const degrees = Array.isArray(body.degree) ? body.degree : [body.degree].filter(Boolean);
+    if (!degrees.length) {
+      throw new Error('Select at least one medical degree');
+    }
+    if (!degrees.every((d) => DEGREES.includes(d))) {
+      throw new Error('Select valid medical degrees from the list');
     }
     if (!body.city || !body.lat || !body.lng) {
       throw new Error('Practice location is required — please detect your location before submitting');
@@ -37,7 +41,7 @@ async function createRoleRecord(role, userId, body, files) {
       userId,
       fullName: body.fullName,
       specialization: body.specialization,
-      degree: body.degree,
+      degree: degrees,
       degreeCertificateUrl: degreeCertUpload.url,
       degreeCertificatePublicId: degreeCertUpload.publicId,
       registrationNumberEncrypted: encrypt(body.registrationNumber),

@@ -13,8 +13,8 @@ const ROLE_FIELDS = {
   doctor: [
     { name: 'fullName', label: 'Full name', type: 'text', required: true },
     { name: 'specialization', label: 'Specialization', type: 'select', options: SPECIALIZATIONS, required: true },
-    { name: 'degree', label: 'Medical degree', type: 'select', options: DEGREES, required: true },
-    { name: 'degreeCertificate', label: 'Degree certificate', type: 'file', required: true, accept: 'image/jpeg', acceptLabel: 'JPG only' },
+    { name: 'degree', label: 'Medical degrees (select all that apply)', type: 'multiselect', options: DEGREES, required: true },
+    { name: 'degreeCertificate', label: 'Degree certificate (combined PDF of all degrees)', type: 'file', required: true, accept: 'application/pdf', acceptLabel: 'PDF only' },
     { name: 'registrationNumber', label: 'State medical council registration number', type: 'text', required: true },
     { name: 'registrationCertificate', label: 'Registration certificate', type: 'file', required: true, accept: 'image/jpeg', acceptLabel: 'JPG only' },
     { name: 'city', label: 'City of practice', type: 'text', required: true },
@@ -165,6 +165,52 @@ function buildSelectField(field, onValid) {
   return wrapper;
 }
 
+function buildMultiSelectField(field, onValid) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'form-field';
+
+  const label = document.createElement('label');
+  label.textContent = field.label;
+  wrapper.appendChild(label);
+
+  const group = document.createElement('div');
+  group.className = 'checkbox-group';
+
+  let triggered = false;
+
+  field.options.forEach((optionValue, index) => {
+    const optionId = `${field.name}-${index}`;
+
+    const optionLabel = document.createElement('label');
+    optionLabel.className = 'checkbox-option';
+    optionLabel.setAttribute('for', optionId);
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = optionId;
+    checkbox.name = field.name;
+    checkbox.value = optionValue;
+
+    checkbox.addEventListener('change', () => {
+      const anyChecked = group.querySelectorAll('input:checked').length > 0;
+      if (anyChecked && !triggered) {
+        triggered = true;
+        onValid?.();
+      }
+    });
+
+    const optionText = document.createElement('span');
+    optionText.textContent = optionValue;
+
+    optionLabel.appendChild(checkbox);
+    optionLabel.appendChild(optionText);
+    group.appendChild(optionLabel);
+  });
+
+  wrapper.appendChild(group);
+  return wrapper;
+}
+
 function buildTextField(field, onValid) {
   const wrapper = document.createElement('div');
   wrapper.className = 'form-field';
@@ -257,36 +303,17 @@ function buildLocationField(field, onValid) {
 
 function renderRoleFields(role) {
   const container = document.querySelector('[data-role-fields]');
-  const submitBtn = document.querySelector('[data-details-form] [type="submit"]');
   container.innerHTML = '';
 
-  const fields = ROLE_FIELDS[role];
-  if (submitBtn) submitBtn.disabled = fields.length > 0;
-
-  renderNextField(container, fields, 0);
-}
-
-function renderNextField(container, fields, index) {
-  if (index >= fields.length) {
-    const submitBtn = document.querySelector('[data-details-form] [type="submit"]');
-    if (submitBtn) submitBtn.disabled = false;
-    return;
-  }
-
-  const field = fields[index];
-  const onValid = () => renderNextField(container, fields, index + 1);
-
-  let node;
-  if (field.type === 'file') node = buildFileField(field, onValid);
-  else if (field.type === 'location') node = buildLocationField(field, onValid);
-  else if (field.type === 'select') node = buildSelectField(field, onValid);
-  else node = buildTextField(field, onValid);
-
-  node.classList.add('form-field--reveal');
-  container.appendChild(node);
-
-  const focusable = node.querySelector('input:not([type="hidden"]), select');
-  focusable?.focus();
+  ROLE_FIELDS[role].forEach((field) => {
+    let node;
+    if (field.type === 'file') node = buildFileField(field);
+    else if (field.type === 'location') node = buildLocationField(field);
+    else if (field.type === 'select') node = buildSelectField(field);
+    else if (field.type === 'multiselect') node = buildMultiSelectField(field);
+    else node = buildTextField(field);
+    container.appendChild(node);
+  });
 }
 
 function initRoleSelect() {

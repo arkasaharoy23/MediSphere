@@ -2,6 +2,7 @@ const Appointment = require('../models/Appointment');
 const User = require('../models/User');
 const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
+const Hospital = require('../models/Hospital');
 const { decrypt, encrypt, hashForLookup } = require('../utils/helpers');
 const { getSignedViewUrl, uploadBuffer } = require('../services/cloudinaryService');
 const { SPECIALIZATIONS, DEGREES } = require('../utils/constants');
@@ -15,20 +16,73 @@ async function getProfile(req, res) {
     return success(res, null);
   }
 
+  let hospitalName = null;
+  if (record.hospitalId) {
+    const hospitalRecord = await Hospital.findOne({ userId: record.hospitalId });
+    hospitalName = hospitalRecord?.hospitalName || null;
+  }
+
   return success(res, {
     fullName: record.fullName,
     specialization: record.specialization,
     city: record.city,
     location: record.location,
+    hospitalId: record.hospitalId,
+    hospitalName,
     degree: record.degree,
     degreeCertificateViewUrl: getSignedViewUrl(record.degreeCertificatePublicId),
     registrationNumber: decrypt(record.registrationNumberEncrypted),
-    registrationCertificateViewUrl: getSignedViewUrl(record.registrationCertificatePublicId)
+    registrationCertificateViewUrl: getSignedViewUrl(record.registrationCertificatePublicId),
+    additionalDegrees: record.additionalDegrees.map((entry) => ({
+      id: entry._id,
+      degree: entry.degree,
+      status: entry.status,
+      rejectionReason: entry.rejectionReason,
+      certificateViewUrl: getSignedViewUrl(entry.certificatePublicId),
+      submittedAt: entry.submittedAt
+    }))
   });
 }
 
+async function addDegree(req, res) {
+  const { degree } = req.body;
+  const certificate = req.files?.additionalDegreeCertificate?.[0];
+
+  if (!degree || !DEGREES.includes(degree)) {
+    return fail(res, 'Select a valid medical degree from the list');
+  }
+  if (!certificate) {
+    return fail(res, 'Please upload a certificate for this degree');
+  }
+
+  const record = await Doctor.findOne({ userId: req.user.id });
+  if (!record) {
+    return fail(res, 'Doctor profile not found', 404);
+  }
+
+  const alreadyHeld = record.degree.includes(degree);
+  const alreadyPending = record.additionalDegrees.some(
+    (entry) => entry.degree === degree && entry.status !== 'rejected'
+  );
+  if (alreadyHeld || alreadyPending) {
+    return fail(res, 'This degree is already on your profile or awaiting review');
+  }
+
+  const certUpload = await uploadBuffer(certificate.buffer, 'doctors');
+
+  record.additionalDegrees.push({
+    degree,
+    certificateUrl: certUpload.url,
+    certificatePublicId: certUpload.publicId,
+    status: 'pending'
+  });
+  await record.save();
+
+  return success(res, { message: 'Degree submitted for admin review' });
+}
+
 async function updateProfile(req, res) {
-  const { fullName, specialization, city, lat, lng } = req.body;
+  const { fullName, specialization, city, lat, lng, hospitalId } = req.body;
 
   if (!fullName || !specialization || !city) {
     return fail(res, 'Full name, specialization, and city are required');
@@ -42,6 +96,16 @@ async function updateProfile(req, res) {
 
   if (lat && lng) {
     update.location = { type: 'Point', coordinates: [Number(lng), Number(lat)] };
+  }
+
+  if (hospitalId) {
+    const hospitalUser = await User.findOne({ _id: hospitalId, role: 'hospital', verificationStatus: 'verified' });
+    if (!hospitalUser) {
+      return fail(res, 'Select a valid, verified hospital');
+    }
+    update.hospitalId = hospitalId;
+  } else if (hospitalId === '') {
+    update.hospitalId = null;
   }
 
   const record = await Doctor.findOneAndUpdate(
@@ -83,8 +147,12 @@ async function resubmitApplication(req, res) {
     return fail(res, 'Select a valid specialization from the list');
   }
 
-  if (!DEGREES.includes(degree)) {
-    return fail(res, 'Select a valid medical degree from the list');
+  const degrees = Array.isArray(degree) ? degree : [degree].filter(Boolean);
+  if (!degrees.length) {
+    return fail(res, 'Select at least one medical degree');
+  }
+  if (!degrees.every((d) => DEGREES.includes(d))) {
+    return fail(res, 'Select valid medical degrees from the list');
   }
 
   const [certUpload, degreeCertUpload] = await Promise.all([
@@ -98,7 +166,7 @@ async function resubmitApplication(req, res) {
       {
         fullName,
         specialization,
-        degree,
+        degree: degrees,
         degreeCertificateUrl: degreeCertUpload.url,
         degreeCertificatePublicId: degreeCertUpload.publicId,
         registrationNumberEncrypted: encrypt(registrationNumber),
@@ -152,6 +220,7 @@ async function listMyPatients(req, res) {
 module.exports = {
   getProfile: asyncHandler(getProfile),
   updateProfile: asyncHandler(updateProfile),
+  addDegree: asyncHandler(addDegree),
   resubmitApplication: asyncHandler(resubmitApplication),
   listMyPatients: asyncHandler(listMyPatients)
 };

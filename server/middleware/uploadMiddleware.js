@@ -3,17 +3,23 @@ const multer = require('multer');
 const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 
 // These fields hold certificates that get reviewed by admins and doctors —
-// restricted to JPG only for consistent, predictable scans.
-const jpgOnlyFields = new Set(['registrationCertificate', 'degreeCertificate']);
+// each is locked to a single specific format for consistent, predictable review.
+const fieldTypeOverrides = {
+  registrationCertificate: 'image/jpeg',
+  degreeCertificate: 'application/pdf',
+  additionalDegreeCertificate: 'application/pdf'
+};
 
 const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
-  if (jpgOnlyFields.has(file.fieldname)) {
-    if (file.mimetype === 'image/jpeg') {
+  const requiredType = fieldTypeOverrides[file.fieldname];
+  if (requiredType) {
+    if (file.mimetype === requiredType) {
       cb(null, true);
     } else {
-      cb(new Error(`${file.fieldname} must be a JPG file`), false);
+      const label = requiredType === 'application/pdf' ? 'PDF' : 'JPG';
+      cb(new Error(`${file.fieldname} must be a ${label} file`), false);
     }
     return;
   }

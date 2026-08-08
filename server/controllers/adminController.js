@@ -18,7 +18,7 @@ function buildRoleView(role, record) {
     return {
       fullName: record.fullName,
       specialization: record.specialization,
-      degree: record.degree,
+      degree: Array.isArray(record.degree) ? record.degree.join(', ') : record.degree,
       registrationNumber: decrypt(record.registrationNumberEncrypted),
       documents: [
         { label: 'Registration certificate', url: getSignedViewUrl(record.registrationCertificatePublicId) },
@@ -133,6 +133,56 @@ async function verifyUser(req, res) {
   return success(res, { userId: user._id, verificationStatus: user.verificationStatus });
 }
 
+async function listDegreeUpdates(req, res) {
+  const doctors = await Doctor.find({ 'additionalDegrees.status': 'pending' }).populate('userId', 'email');
+
+  const results = doctors.flatMap((doctor) =>
+    doctor.additionalDegrees
+      .filter((entry) => entry.status === 'pending')
+      .map((entry) => ({
+        userId: doctor.userId._id,
+        doctorEmail: doctor.userId.email,
+        fullName: doctor.fullName,
+        degreeId: entry._id,
+        degree: entry.degree,
+        certificateViewUrl: getSignedViewUrl(entry.certificatePublicId),
+        submittedAt: entry.submittedAt
+      }))
+  );
+
+  return success(res, results);
+}
+
+async function reviewDegreeUpdate(req, res) {
+  const { userId, degreeId } = req.params;
+  const { decision, reason } = req.body;
+
+  if (!['verified', 'rejected'].includes(decision)) {
+    return fail(res, 'decision must be "verified" or "rejected"');
+  }
+
+  if (decision === 'rejected' && !reason?.trim()) {
+    return fail(res, 'A rejection reason is required');
+  }
+
+  const doctor = await Doctor.findOne({ userId, 'additionalDegrees._id': degreeId });
+  if (!doctor) {
+    return fail(res, 'Degree submission not found', 404);
+  }
+
+  const entry = doctor.additionalDegrees.id(degreeId);
+  entry.status = decision;
+  entry.rejectionReason = decision === 'rejected' ? reason.trim() : null;
+
+  if (decision === 'verified' && !doctor.degree.includes(entry.degree)) {
+    doctor.degree.push(entry.degree);
+  }
+
+  await doctor.save();
+
+  return success(res, { message: `Degree ${decision}` });
+}
+
 async function listUsers(req, res) {
   const { role, search } = req.query;
   const query = {};
@@ -203,6 +253,8 @@ async function getAnalytics(req, res) {
 module.exports = {
   listByRole: asyncHandler(listByRole),
   verifyUser: asyncHandler(verifyUser),
+  listDegreeUpdates: asyncHandler(listDegreeUpdates),
+  reviewDegreeUpdate: asyncHandler(reviewDegreeUpdate),
   listUsers: asyncHandler(listUsers),
   toggleUserActive: asyncHandler(toggleUserActive),
   getAnalytics: asyncHandler(getAnalytics)

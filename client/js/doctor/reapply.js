@@ -13,7 +13,30 @@ function populateSelect(selectEl, options) {
   });
 }
 
-function initFileField(inputId, labelSelector, textSelector) {
+function populateDegreeCheckboxes(container, options) {
+  options.forEach((value, index) => {
+    const optionId = `degree-${index}`;
+
+    const optionLabel = document.createElement('label');
+    optionLabel.className = 'checkbox-option';
+    optionLabel.setAttribute('for', optionId);
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = optionId;
+    checkbox.name = 'degree';
+    checkbox.value = value;
+
+    const optionText = document.createElement('span');
+    optionText.textContent = value;
+
+    optionLabel.appendChild(checkbox);
+    optionLabel.appendChild(optionText);
+    container.appendChild(optionLabel);
+  });
+}
+
+function initFileField(inputId, labelSelector, textSelector, mimeType, formatLabel) {
   const input = document.querySelector(`#${inputId}`);
   const label = document.querySelector(labelSelector);
   const textSpan = document.querySelector(textSelector);
@@ -22,11 +45,11 @@ function initFileField(inputId, labelSelector, textSelector) {
     if (!isFileSelected(input)) return;
 
     const file = input.files[0];
-    if (file.type !== 'image/jpeg') {
+    if (file.type !== mimeType) {
       input.value = '';
       label.removeAttribute('data-filled');
-      textSpan.textContent = 'Choose a file (JPG only)';
-      showToast('Please upload a JPG file');
+      textSpan.textContent = `Choose a file (${formatLabel})`;
+      showToast(`Please upload a ${formatLabel} file`);
       return;
     }
 
@@ -76,9 +99,13 @@ async function prefillForm() {
 
   form.fullName.value = profile.fullName || '';
   form.specialization.value = profile.specialization || '';
-  form.degree.value = profile.degree || '';
   form.city.value = profile.city || '';
   form.registrationNumber.value = profile.registrationNumber || '';
+
+  const heldDegrees = new Set(profile.degree || []);
+  document.querySelectorAll('[data-degree-checkboxes] input[type="checkbox"]').forEach((checkbox) => {
+    checkbox.checked = heldDegrees.has(checkbox.value);
+  });
 }
 
 function initForm() {
@@ -87,6 +114,9 @@ function initForm() {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
+    if (!form.querySelector('[data-degree-checkboxes] input:checked')) {
+      return showToast('Select at least one medical degree');
+    }
     if (!form.lat.value || !form.lng.value) {
       return showToast('Please detect your location before submitting');
     }
@@ -134,9 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
       banner.style.display = 'flex';
 
       populateSelect(document.querySelector('#specialization'), SPECIALIZATIONS);
-      populateSelect(document.querySelector('#degree'), DEGREES);
-      initFileField('degreeCertificate', '[data-degree-cert-label]', '[data-degree-cert-text]');
-      initFileField('registrationCertificate', '[data-registration-cert-label]', '[data-registration-cert-text]');
+      populateDegreeCheckboxes(document.querySelector('[data-degree-checkboxes]'), DEGREES);
+      initFileField('degreeCertificate', '[data-degree-cert-label]', '[data-degree-cert-text]', 'application/pdf', 'PDF only');
+      initFileField('registrationCertificate', '[data-registration-cert-label]', '[data-registration-cert-text]', 'image/jpeg', 'JPG only');
       initLocationDetect();
       initForm();
       prefillForm();

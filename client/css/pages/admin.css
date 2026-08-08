@@ -210,6 +210,10 @@
   gap: var(--space-4);
 }
 
+.review-list[hidden] {
+  display: none;
+}
+
 .review-empty {
   text-align: center;
   padding: var(--space-9) var(--space-5);
