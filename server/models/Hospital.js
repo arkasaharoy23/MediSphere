@@ -27,7 +27,8 @@ const hospitalSchema = new mongoose.Schema({
   beds: [{
     category: { type: String, required: true },
     total: { type: Number, required: true, min: 0 },
-    available: { type: Number, required: true, min: 0 }
+    available: { type: Number, required: true, min: 0 },
+    departmentId: { type: mongoose.Schema.Types.ObjectId, default: null }
   }]
 }, { timestamps: true });
 

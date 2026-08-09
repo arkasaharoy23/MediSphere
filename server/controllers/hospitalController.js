@@ -17,11 +17,38 @@ async function listDirectory(req, res) {
   );
 }
 
+async function listDepartmentsForHospital(req, res) {
+  const { hospitalUserId } = req.params;
+
+  const hospital = await Hospital.findOne({ userId: hospitalUserId });
+  if (!hospital) return success(res, []);
+
+  return success(res, hospital.departments.map((d) => ({ id: d._id, name: d.name })));
+}
+
 async function listDepartments(req, res) {
   const hospital = await Hospital.findOne({ userId: req.user.id });
   if (!hospital) return success(res, []);
 
-  return success(res, hospital.departments.map((d) => ({ id: d._id, name: d.name, description: d.description })));
+  const doctors = await Doctor.find({ hospitalId: req.user.id }).select('fullName departmentId');
+
+  const results = hospital.departments.map((d) => {
+    const deptDoctors = doctors.filter((doc) => doc.departmentId?.toString() === d._id.toString());
+    const deptBeds = hospital.beds.filter((b) => b.departmentId?.toString() === d._id.toString());
+
+    return {
+      id: d._id,
+      name: d.name,
+      description: d.description,
+      doctorCount: deptDoctors.length,
+      doctorNames: deptDoctors.map((doc) => doc.fullName),
+      totalBeds: deptBeds.reduce((sum, b) => sum + b.total, 0),
+      availableBeds: deptBeds.reduce((sum, b) => sum + b.available, 0),
+      hasBeds: deptBeds.length > 0
+    };
+  });
+
+  return success(res, results);
 }
 
 async function addDepartment(req, res) {
@@ -49,12 +76,21 @@ async function deleteDepartment(req, res) {
   if (!department) return fail(res, 'Department not found', 404);
 
   department.deleteOne();
+
+  hospital.beds.forEach((bed) => {
+    if (bed.departmentId?.toString() === id) bed.departmentId = null;
+  });
+
   await hospital.save();
+  await Doctor.updateMany({ hospitalId: req.user.id, departmentId: id }, { departmentId: null });
 
   return success(res, { message: 'Department removed' });
 }
 
 async function listAffiliatedDoctors(req, res) {
+  const hospital = await Hospital.findOne({ userId: req.user.id });
+  const departmentLookup = new Map((hospital?.departments || []).map((d) => [d._id.toString(), d.name]));
+
   const doctors = await Doctor.find({ hospitalId: req.user.id }).populate('userId', 'email verificationStatus');
 
   return success(
@@ -64,7 +100,8 @@ async function listAffiliatedDoctors(req, res) {
       fullName: doc.fullName,
       email: doc.userId.email,
       specialization: doc.specialization,
-      verificationStatus: doc.userId.verificationStatus
+      verificationStatus: doc.userId.verificationStatus,
+      departmentName: doc.departmentId ? departmentLookup.get(doc.departmentId.toString()) || null : null
     }))
   );
 }
@@ -78,6 +115,7 @@ async function removeDoctorAffiliation(req, res) {
   }
 
   doctor.hospitalId = null;
+  doctor.departmentId = null;
   await doctor.save();
 
   return success(res, { message: 'Doctor removed from your hospital' });
@@ -110,14 +148,23 @@ async function listBeds(req, res) {
   const hospital = await Hospital.findOne({ userId: req.user.id });
   if (!hospital) return success(res, []);
 
+  const departmentLookup = new Map(hospital.departments.map((d) => [d._id.toString(), d.name]));
+
   return success(
     res,
-    hospital.beds.map((b) => ({ id: b._id, category: b.category, total: b.total, available: b.available }))
+    hospital.beds.map((b) => ({
+      id: b._id,
+      category: b.category,
+      total: b.total,
+      available: b.available,
+      departmentId: b.departmentId,
+      departmentName: b.departmentId ? departmentLookup.get(b.departmentId.toString()) || null : null
+    }))
   );
 }
 
 async function addBedCategory(req, res) {
-  const { category, total, available } = req.body;
+  const { category, total, available, departmentId } = req.body;
 
   if (!category?.trim() || total == null || available == null) {
     return fail(res, 'Category, total, and available beds are required');
@@ -129,7 +176,16 @@ async function addBedCategory(req, res) {
   const hospital = await Hospital.findOne({ userId: req.user.id });
   if (!hospital) return fail(res, 'Hospital profile not found', 404);
 
-  hospital.beds.push({ category: category.trim(), total: Number(total), available: Number(available) });
+  if (departmentId && !hospital.departments.id(departmentId)) {
+    return fail(res, 'Select a valid department');
+  }
+
+  hospital.beds.push({
+    category: category.trim(),
+    total: Number(total),
+    available: Number(available),
+    departmentId: departmentId || null
+  });
   await hospital.save();
 
   return success(res, { message: 'Bed category added' }, 201);
@@ -176,6 +232,7 @@ async function deleteBedCategory(req, res) {
 
 module.exports = {
   listDirectory: asyncHandler(listDirectory),
+  listDepartmentsForHospital: asyncHandler(listDepartmentsForHospital),
   listDepartments: asyncHandler(listDepartments),
   addDepartment: asyncHandler(addDepartment),
   deleteDepartment: asyncHandler(deleteDepartment),

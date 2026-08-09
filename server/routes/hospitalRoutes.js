@@ -2,6 +2,7 @@ const express = require('express');
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 const {
   listDirectory,
+  listDepartmentsForHospital,
   listDepartments,
   addDepartment,
   deleteDepartment,
@@ -18,6 +19,7 @@ const router = express.Router();
 
 // Any authenticated role can browse verified hospitals (used by doctors picking an affiliation).
 router.get('/directory', protect, listDirectory);
+router.get('/:hospitalUserId/departments', protect, listDepartmentsForHospital);
 
 router.use(protect, authorizeRoles('hospital'));
 

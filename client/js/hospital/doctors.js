@@ -15,7 +15,7 @@ function buildDoctorCard(doctor) {
   card.innerHTML = `
     <div class="hosp-card__info">
       <h3>${doctor.fullName} <span class="${statusBadgeClass(doctor.verificationStatus)}">${doctor.verificationStatus}</span></h3>
-      <p>${doctor.specialization} · ${doctor.email}</p>
+      <p>${doctor.specialization} · ${doctor.email}${doctor.departmentName ? ' · ' + doctor.departmentName : ''}</p>
     </div>
     <button type="button" class="btn btn--ghost btn--sm" data-remove-btn>Remove</button>
   `;

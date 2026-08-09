@@ -24,7 +24,8 @@ const doctorSchema = new mongoose.Schema({
     type: { type: String, enum: ['Point'], default: 'Point' },
     coordinates: { type: [Number], required: true }
   },
-  hospitalId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }
+  hospitalId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  departmentId: { type: mongoose.Schema.Types.ObjectId, default: null }
 }, { timestamps: true });
 
 doctorSchema.index({ location: '2dsphere' });

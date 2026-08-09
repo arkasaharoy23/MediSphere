@@ -4,12 +4,24 @@ import { showToast } from '../components/toast.js';
 
 function buildDepartmentCard(dept, onDelete) {
   const card = document.createElement('div');
-  card.className = 'hosp-card';
+  card.className = 'hosp-card hosp-card--dept';
+
+  const doctorLine = dept.doctorCount > 0
+    ? `${dept.doctorCount} doctor${dept.doctorCount === 1 ? '' : 's'}: ${dept.doctorNames.join(', ')}`
+    : 'No doctors assigned to this department yet';
+
+  const bedLine = dept.hasBeds
+    ? `${dept.availableBeds} / ${dept.totalBeds} beds available`
+    : 'No beds linked to this department';
 
   card.innerHTML = `
     <div class="hosp-card__info">
       <h3>${dept.name}</h3>
       ${dept.description ? `<p>${dept.description}</p>` : ''}
+      <div class="hosp-card__tags">
+        <span class="hosp-card__tag">${doctorLine}</span>
+        <span class="hosp-card__tag">${bedLine}</span>
+      </div>
     </div>
     <button type="button" class="btn btn--ghost btn--sm" data-delete-btn>Remove</button>
   `;

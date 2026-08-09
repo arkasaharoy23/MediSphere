@@ -11,7 +11,7 @@ function buildBedCard(bed) {
 
   card.innerHTML = `
     <div class="bed-card__head">
-      <h3>${bed.category}</h3>
+      <h3>${bed.category}${bed.departmentName ? ` <span class="hosp-card__tag">${bed.departmentName}</span>` : ''}</h3>
       <button type="button" class="btn btn--ghost btn--sm" data-delete-btn>Remove</button>
     </div>
     <div class="bed-card__count">${bed.available} <span>/ ${bed.total} available</span></div>
@@ -75,6 +75,19 @@ async function loadBeds() {
   result.data.forEach((bed) => list.appendChild(buildBedCard(bed)));
 }
 
+async function populateDepartmentOptions() {
+  const select = document.querySelector('#bedDepartment');
+  const result = await authFetch('/api/hospital/departments');
+  if (!result.ok) return;
+
+  result.data.forEach((dept) => {
+    const option = document.createElement('option');
+    option.value = dept.id;
+    option.textContent = dept.name;
+    select.appendChild(option);
+  });
+}
+
 function initAddForm() {
   const form = document.querySelector('[data-add-bed-form]');
 
@@ -98,7 +111,8 @@ function initAddForm() {
       body: JSON.stringify({
         category: form.category.value,
         total: form.total.value,
-        available: form.available.value
+        available: form.available.value,
+        departmentId: form.departmentId.value
       })
     });
 
@@ -121,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     expectedRole: 'hospital',
     onReady: () => {
       initAddForm();
+      populateDepartmentOptions();
       loadBeds();
     }
   });

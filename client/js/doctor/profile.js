@@ -20,6 +20,40 @@ async function populateHospitalOptions(selectedHospitalId) {
   }
 }
 
+async function updateDepartmentField(hospitalId, selectedDepartmentId) {
+  const field = document.querySelector('[data-department-field]');
+  const select = document.querySelector('#departmentId');
+
+  if (!hospitalId) {
+    field.hidden = true;
+    select.innerHTML = '<option value="">No department selected</option>';
+    return;
+  }
+
+  const result = await authFetch(`/api/hospital/${hospitalId}/departments`);
+  select.innerHTML = '<option value="">No department selected</option>';
+
+  if (result.ok) {
+    result.data.forEach((dept) => {
+      const option = document.createElement('option');
+      option.value = dept.id;
+      option.textContent = dept.name;
+      select.appendChild(option);
+    });
+  }
+
+  if (selectedDepartmentId) {
+    select.value = selectedDepartmentId;
+  }
+
+  field.hidden = false;
+}
+
+function initHospitalSelect() {
+  const select = document.querySelector('#hospitalId');
+  select.addEventListener('change', () => updateDepartmentField(select.value, null));
+}
+
 function populateSpecializationOptions() {
   const select = document.querySelector('#specialization');
   SPECIALIZATIONS.forEach((value) => {
@@ -81,7 +115,9 @@ function populateForm(profile) {
   form.specialization.value = profile.specialization || '';
   form.city.value = profile.city || '';
 
-  populateHospitalOptions(profile.hospitalId);
+  populateHospitalOptions(profile.hospitalId).then(() => {
+    updateDepartmentField(profile.hospitalId, profile.departmentId);
+  });
 
   const degreeEl = document.querySelector('[data-degree]');
   if (degreeEl) {
@@ -162,7 +198,8 @@ function initForm() {
       city: form.city.value,
       lat: form.lat.value,
       lng: form.lng.value,
-      hospitalId: form.hospitalId.value
+      hospitalId: form.hospitalId.value,
+      departmentId: form.departmentId.value
     };
 
     const result = await authFetch('/api/doctor/profile', {
@@ -247,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     onReady: () => {
       populateSpecializationOptions();
       initForm();
+      initHospitalSelect();
       initLocationDetect();
       initAddDegreeForm();
       loadProfile();

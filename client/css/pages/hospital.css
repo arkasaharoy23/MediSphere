@@ -45,6 +45,25 @@
   margin-top: 2px;
 }
 
+.hosp-card--dept {
+  align-items: flex-start;
+}
+
+.hosp-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.hosp-card__tag {
+  font-size: 0.78rem;
+  color: var(--color-teal);
+  background: var(--color-teal-tint);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
 .hosp-card__meta {
   display: flex;
   align-items: center;

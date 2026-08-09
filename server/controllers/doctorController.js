@@ -17,9 +17,14 @@ async function getProfile(req, res) {
   }
 
   let hospitalName = null;
+  let departmentName = null;
   if (record.hospitalId) {
     const hospitalRecord = await Hospital.findOne({ userId: record.hospitalId });
     hospitalName = hospitalRecord?.hospitalName || null;
+    if (record.departmentId && hospitalRecord) {
+      const dept = hospitalRecord.departments.id(record.departmentId);
+      departmentName = dept?.name || null;
+    }
   }
 
   return success(res, {
@@ -29,6 +34,8 @@ async function getProfile(req, res) {
     location: record.location,
     hospitalId: record.hospitalId,
     hospitalName,
+    departmentId: record.departmentId,
+    departmentName,
     degree: record.degree,
     degreeCertificateViewUrl: getSignedViewUrl(record.degreeCertificatePublicId),
     registrationNumber: decrypt(record.registrationNumberEncrypted),
@@ -82,7 +89,7 @@ async function addDegree(req, res) {
 }
 
 async function updateProfile(req, res) {
-  const { fullName, specialization, city, lat, lng, hospitalId } = req.body;
+  const { fullName, specialization, city, lat, lng, hospitalId, departmentId } = req.body;
 
   if (!fullName || !specialization || !city) {
     return fail(res, 'Full name, specialization, and city are required');
@@ -104,8 +111,19 @@ async function updateProfile(req, res) {
       return fail(res, 'Select a valid, verified hospital');
     }
     update.hospitalId = hospitalId;
+
+    if (departmentId) {
+      const hospitalRecord = await Hospital.findOne({ userId: hospitalId });
+      if (!hospitalRecord?.departments.id(departmentId)) {
+        return fail(res, 'Select a valid department for this hospital');
+      }
+      update.departmentId = departmentId;
+    } else {
+      update.departmentId = null;
+    }
   } else if (hospitalId === '') {
     update.hospitalId = null;
+    update.departmentId = null;
   }
 
   const record = await Doctor.findOneAndUpdate(
