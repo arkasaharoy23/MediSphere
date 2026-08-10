@@ -1,6 +1,6 @@
 const express = require('express');
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
-const { getProfile, updateProfile, listDoctors, listHospitals } = require('../controllers/patientController');
+const { getProfile, updateProfile, listDoctors, listHospitals, listLabs, listLabTests } = require('../controllers/patientController');
 
 const router = express.Router();
 
@@ -10,5 +10,7 @@ router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.get('/doctors', listDoctors);
 router.get('/hospitals', listHospitals);
+router.get('/labs', listLabs);
+router.get('/labs/:labId/tests', listLabTests);
 
 module.exports = router;

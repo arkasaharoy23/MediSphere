@@ -7,7 +7,8 @@ const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'
 const fieldTypeOverrides = {
   registrationCertificate: 'image/jpeg',
   degreeCertificate: 'application/pdf',
-  additionalDegreeCertificate: 'application/pdf'
+  additionalDegreeCertificate: 'application/pdf',
+  testReport: 'application/pdf'
 };
 
 const storage = multer.memoryStorage();

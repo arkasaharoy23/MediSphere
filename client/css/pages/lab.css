@@ -1,0 +1,126 @@
+.hosp-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.hosp-empty {
+  color: var(--color-ink-soft);
+  padding: var(--space-5);
+  text-align: center;
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+.hosp-card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.hosp-card__info h3 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.hosp-card__info p {
+  font-size: 0.86rem;
+  color: var(--color-ink-soft);
+  margin-top: 2px;
+}
+
+.hosp-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.form-card {
+  max-width: none;
+}
+
+.kyc-note {
+  font-size: 0.86rem;
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-4);
+}
+
+.kyc-fields {
+  margin-bottom: var(--space-5);
+}
+
+.kyc-field label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-ink-soft);
+  margin-bottom: 2px;
+}
+
+.kyc-field span {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.kyc-docs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.kyc-docs a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.86rem;
+  color: var(--color-teal);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.kyc-docs a:hover {
+  border-color: var(--color-teal);
+}
+
+.kyc-docs a svg {
+  width: 15px;
+  height: 15px;
+}
+
+.status-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.status-badge--pending {
+  color: var(--color-coral);
+  background: var(--color-coral-tint);
+}
+
+.status-badge--sample_collected,
+.status-badge--processing {
+  color: var(--color-teal);
+  background: var(--color-teal-tint);
+}
+
+.status-badge--completed {
+  color: var(--color-teal);
+  background: var(--color-teal-tint);
+}
+
+.status-badge--cancelled {
+  color: var(--color-ink-soft);
+  background: var(--color-line);
+}

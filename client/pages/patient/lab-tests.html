@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emergency SOS — MediSphere</title>
+<title>Lab Tests — MediSphere</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -11,7 +11,8 @@
 <link rel="stylesheet" href="../../css/style.css">
 <link rel="stylesheet" href="../../css/layout/sidebar.css">
 <link rel="stylesheet" href="../../css/pages/dashboard.css">
-<link rel="stylesheet" href="../../css/pages/emergency.css">
+<link rel="stylesheet" href="../../css/pages/appointment.css">
+<link rel="stylesheet" href="../../css/pages/lab.css">
 </head>
 <body>
 
@@ -24,7 +25,7 @@
         <path d="M6 16H11L13.5 9L18.5 23L21 16H26" stroke="var(--color-teal)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
         <circle cx="13.5" cy="9" r="1.75" fill="var(--color-coral)"/>
       </svg>
-      MediSpheree
+      MediSphere
     </div>
 
     <nav class="sidebar__nav">
@@ -40,11 +41,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
         Medical Records
       </a>
-      <a href="emergency.html" class="sidebar__link" data-active="true">
+      <a href="emergency.html" class="sidebar__link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15 9L22 10L17 15L18 22L12 18.5L6 22L7 15L2 10L9 9L12 2Z" stroke-linejoin="round"/></svg>
         Emergency SOS
       </a>
-      <a href="lab-tests.html" class="sidebar__link">
+      <a href="lab-tests.html" class="sidebar__link" data-active="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2V8L4 18C3.5 19.5 4.5 21 6 21H18C19.5 21 20.5 19.5 20 18L15 8V2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 2H15" stroke-linecap="round"/><path d="M7 14H17" stroke-linecap="round"/></svg>
         Lab Tests
       </a>
@@ -67,21 +68,21 @@
         <button class="sidebar-toggle" data-sidebar-toggle aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6H20M4 12H20M4 18H20" stroke-linecap="round"/></svg>
         </button>
-        <span class="topbar__title">Emergency SOS</span>
+        <span class="topbar__title">Lab Tests</span>
       </div>
 
       <div class="topbar__actions">
         <button class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
         </button>
-        <a href="profile.html" class="topbar__avatar" data-topbar-avatar aria-label="View profile"></a>
+        <div class="topbar__avatar" data-topbar-avatar></div>
       </div>
     </header>
 
     <main class="app-content">
 
       <div class="dash-welcome">
-        <h1>Emergency SOS</h1>
+        <h1>Lab tests</h1>
         <p data-user-name>Loading...</p>
       </div>
 
@@ -90,19 +91,45 @@
         <span data-status-text>Checking your account status...</span>
       </div>
 
-      <div class="sos-panel" data-sos-panel>
-        <p>Loading...</p>
+      <div class="appt-section">
+        <h2>Book a diagnostic test</h2>
+        <div class="form-card">
+          <form data-booking-form novalidate>
+
+            <div class="form-field">
+              <label for="labId">Lab</label>
+              <select id="labId" name="labId" data-lab-select required>
+                <option value="">Loading labs...</option>
+              </select>
+              <small data-location-note>Detecting your location to find nearby labs...</small>
+            </div>
+
+            <div class="form-field">
+              <label for="testId">Test</label>
+              <select id="testId" name="testId" data-test-select required>
+                <option value="">Choose a lab first</option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="preferredDate">Preferred date</label>
+              <input type="date" id="preferredDate" name="preferredDate" required>
+            </div>
+
+            <button type="submit" class="btn btn--primary">Book test</button>
+          </form>
+        </div>
       </div>
 
       <div class="appt-section">
-        <h2>Past SOS requests</h2>
-        <div class="sos-history-list" data-sos-history></div>
+        <h2>Your test bookings</h2>
+        <div class="appt-list" data-booking-list></div>
       </div>
 
     </main>
   </div>
 </div>
 
-<script type="module" src="../../js/patient/emergency.js"></script>
+<script type="module" src="../../js/patient/lab-tests.js"></script>
 </body>
 </html>

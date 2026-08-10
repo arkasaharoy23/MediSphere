@@ -1,6 +1,8 @@
 const Patient = require('../models/Patient');
 const Doctor = require('../models/Doctor');
 const Hospital = require('../models/Hospital');
+const Lab = require('../models/Lab');
+const LabTest = require('../models/LabTest');
 const User = require('../models/User');
 const { encrypt, decrypt } = require('../utils/helpers');
 const { success, fail } = require('../utils/response');
@@ -133,9 +135,56 @@ async function listHospitals(req, res) {
   return success(res, { hospitals: results, locationSorted });
 }
 
+async function listLabs(req, res) {
+  const { lat, lng } = req.query;
+
+  const labUsers = await User.find({ role: 'lab', verificationStatus: 'verified' });
+  const verifiedIds = labUsers.map((u) => u._id);
+
+  let labRecords;
+  let locationSorted = false;
+
+  if (lat && lng) {
+    labRecords = await Lab.find({
+      userId: { $in: verifiedIds },
+      location: {
+        $near: {
+          $geometry: { type: 'Point', coordinates: [Number(lng), Number(lat)] }
+        }
+      }
+    });
+    locationSorted = true;
+  } else {
+    labRecords = await Lab.find({ userId: { $in: verifiedIds } });
+  }
+
+  const results = labRecords.map((record) => ({
+    labId: record.userId,
+    labName: record.labName,
+    city: record.city
+  }));
+
+  return success(res, { labs: results, locationSorted });
+}
+
+async function listLabTests(req, res) {
+  const { labId } = req.params;
+
+  const labUser = await User.findOne({ _id: labId, role: 'lab', verificationStatus: 'verified' });
+  if (!labUser) {
+    return fail(res, 'Lab not found', 404);
+  }
+
+  const tests = await LabTest.find({ labId }).sort({ name: 1 });
+
+  return success(res, tests);
+}
+
 module.exports = {
   getProfile: asyncHandler(getProfile),
   updateProfile: asyncHandler(updateProfile),
   listDoctors: asyncHandler(listDoctors),
-  listHospitals: asyncHandler(listHospitals)
+  listHospitals: asyncHandler(listHospitals),
+  listLabs: asyncHandler(listLabs),
+  listLabTests: asyncHandler(listLabTests)
 };

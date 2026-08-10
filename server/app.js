@@ -11,6 +11,8 @@ const medicalRecordRoutes = require('./routes/medicalRecordRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
 const prescriptionRoutes = require('./routes/prescriptionRoutes');
 const hospitalRoutes = require('./routes/hospitalRoutes');
+const labRoutes = require('./routes/labRoutes');
+const testBookingRoutes = require('./routes/testBookingRoutes');
 const notFoundMiddleware = require('./middleware/notFoundMiddleware');
 const errorMiddleware = require('./middleware/errorMiddleware');
 
@@ -40,6 +42,8 @@ app.use('/api/records', medicalRecordRoutes);
 app.use('/api/doctor', doctorRoutes);
 app.use('/api/prescriptions', prescriptionRoutes);
 app.use('/api/hospital', hospitalRoutes);
+app.use('/api/lab', labRoutes);
+app.use('/api/test-bookings', testBookingRoutes);
 
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
