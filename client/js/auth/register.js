@@ -39,7 +39,9 @@ const ROLE_FIELDS = {
   pharmacy: [
     { name: 'pharmacyName', label: 'Pharmacy name', type: 'text', required: true },
     { name: 'drugLicenseNumber', label: 'Drug license number (Form 20/21)', type: 'text', required: true },
-    { name: 'document', label: 'Verification document', type: 'file', required: true }
+    { name: 'document', label: 'Verification document', type: 'file', required: true },
+    { name: 'city', label: 'City', type: 'text', required: true },
+    { name: 'location', label: 'Pharmacy location', type: 'location', required: true }
   ],
   ambulance: [
     { name: 'vehicleNumber', label: 'Vehicle registration number', type: 'text', required: true },
@@ -388,7 +390,7 @@ function initSubmitStep() {
 
     if (!state.firebaseUser) return showToast('Please complete account creation first');
 
-    if (['doctor', 'hospital', 'ambulance', 'lab'].includes(state.role)) {
+    if (['doctor', 'hospital', 'ambulance', 'lab', 'pharmacy'].includes(state.role)) {
       const latInput = form.querySelector('input[name="lat"]');
       if (!latInput || !latInput.value) {
         return showToast('Please detect your location before submitting');

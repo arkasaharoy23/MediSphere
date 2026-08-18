@@ -51,43 +51,6 @@ async function getProfile(req, res) {
   });
 }
 
-async function addDegree(req, res) {
-  const { degree } = req.body;
-  const certificate = req.files?.additionalDegreeCertificate?.[0];
-
-  if (!degree || !DEGREES.includes(degree)) {
-    return fail(res, 'Select a valid medical degree from the list');
-  }
-  if (!certificate) {
-    return fail(res, 'Please upload a certificate for this degree');
-  }
-
-  const record = await Doctor.findOne({ userId: req.user.id });
-  if (!record) {
-    return fail(res, 'Doctor profile not found', 404);
-  }
-
-  const alreadyHeld = record.degree.includes(degree);
-  const alreadyPending = record.additionalDegrees.some(
-    (entry) => entry.degree === degree && entry.status !== 'rejected'
-  );
-  if (alreadyHeld || alreadyPending) {
-    return fail(res, 'This degree is already on your profile or awaiting review');
-  }
-
-  const certUpload = await uploadBuffer(certificate.buffer, 'doctors');
-
-  record.additionalDegrees.push({
-    degree,
-    certificateUrl: certUpload.url,
-    certificatePublicId: certUpload.publicId,
-    status: 'pending'
-  });
-  await record.save();
-
-  return success(res, { message: 'Degree submitted for admin review' });
-}
-
 async function updateProfile(req, res) {
   const { fullName, specialization, city, lat, lng, hospitalId, departmentId } = req.body;
 
@@ -137,6 +100,43 @@ async function updateProfile(req, res) {
   }
 
   return success(res, { message: 'Profile updated' });
+}
+
+async function addDegree(req, res) {
+  const { degree } = req.body;
+  const certificate = req.files?.additionalDegreeCertificate?.[0];
+
+  if (!degree || !DEGREES.includes(degree)) {
+    return fail(res, 'Select a valid medical degree from the list');
+  }
+  if (!certificate) {
+    return fail(res, 'Please upload a certificate for this degree');
+  }
+
+  const record = await Doctor.findOne({ userId: req.user.id });
+  if (!record) {
+    return fail(res, 'Doctor profile not found', 404);
+  }
+
+  const alreadyHeld = record.degree.includes(degree);
+  const alreadyPending = record.additionalDegrees.some(
+    (entry) => entry.degree === degree && entry.status !== 'rejected'
+  );
+  if (alreadyHeld || alreadyPending) {
+    return fail(res, 'This degree is already on your profile or awaiting review');
+  }
+
+  const certUpload = await uploadBuffer(certificate.buffer, 'doctors');
+
+  record.additionalDegrees.push({
+    degree,
+    certificateUrl: certUpload.url,
+    certificatePublicId: certUpload.publicId,
+    status: 'pending'
+  });
+  await record.save();
+
+  return success(res, { message: 'Degree submitted for admin review' });
 }
 
 async function resubmitApplication(req, res) {
@@ -193,7 +193,8 @@ async function resubmitApplication(req, res) {
         registrationCertificatePublicId: certUpload.publicId,
         city,
         location: { type: 'Point', coordinates: [Number(lng), Number(lat)] }
-      }
+      },
+      { runValidators: true }
     );
   } catch (err) {
     if (err.code === 11000) {
@@ -210,22 +211,21 @@ async function resubmitApplication(req, res) {
 }
 
 async function listMyPatients(req, res) {
-  const appointments = await Appointment.find({ doctorId: req.user.id });
-  const uniquePatientIds = [...new Set(appointments.map((a) => a.patientId.toString()))];
+  const appointments = await Appointment.find({ doctorId: req.user.id }).sort({ date: -1 });
+
+  const patientIds = [...new Set(appointments.map((appt) => appt.patientId.toString()))];
 
   const results = await Promise.all(
-    uniquePatientIds.map(async (pid) => {
-      const patientUser = await User.findById(pid);
-      const patientRecord = await Patient.findOne({ userId: pid });
-      const patientAppointments = appointments
-        .filter((a) => a.patientId.toString() === pid)
-        .sort((a, b) => new Date(b.date) - new Date(a.date));
+    patientIds.map(async (patientId) => {
+      const patientUser = await User.findById(patientId);
+      const patientRecord = await Patient.findOne({ userId: patientId });
+      const patientAppointments = appointments.filter((appt) => appt.patientId.toString() === patientId);
 
       return {
-        patientId: pid,
+        patientId,
         fullName: patientRecord?.fullName || patientUser?.email || 'Unknown patient',
         email: patientUser?.email,
-        bloodGroup: patientRecord?.bloodGroup || 'unknown',
+        bloodGroup: patientRecord?.bloodGroup || null,
         appointmentCount: patientAppointments.length,
         lastVisit: patientAppointments[0]?.date || null
       };

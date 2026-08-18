@@ -99,6 +99,9 @@ async function createRoleRecord(role, userId, body, files) {
   if (role === 'pharmacy') {
     const doc = files?.document?.[0];
     if (!doc) throw new Error('A verification document is required');
+    if (!body.city || !body.lat || !body.lng) {
+      throw new Error('Pharmacy location is required — please detect your location before submitting');
+    }
     const docUpload = await uploadBuffer(doc.buffer, 'pharmacies');
     return Pharmacy.create({
       userId,
@@ -106,7 +109,9 @@ async function createRoleRecord(role, userId, body, files) {
       drugLicenseNumberEncrypted: encrypt(body.drugLicenseNumber),
       drugLicenseNumberHash: hashForLookup(body.drugLicenseNumber),
       documentUrl: docUpload.url,
-      documentPublicId: docUpload.publicId
+      documentPublicId: docUpload.publicId,
+      city: body.city,
+      location: { type: 'Point', coordinates: [Number(body.lng), Number(body.lat)] }
     });
   }
 

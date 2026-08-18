@@ -2,9 +2,9 @@ const cloudinary = require('../config/cloudinary');
 
 function uploadBuffer(buffer, folder, isPrivate = true) {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
+    const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: `MediSphere/${folder}`,
+        folder: `medisphere/${folder}`,
         resource_type: 'auto',
         type: isPrivate ? 'authenticated' : 'upload'
       },
@@ -13,16 +13,16 @@ function uploadBuffer(buffer, folder, isPrivate = true) {
         resolve({
           url: result.secure_url,
           publicId: result.public_id,
-          resourceType: result.resource_type,
-          isPrivate
+          resourceType: result.resource_type
         });
       }
     );
-    stream.end(buffer);
+    uploadStream.end(buffer);
   });
 }
 
 function getSignedViewUrl(publicId, resourceType = 'image') {
+  if (!publicId) return null;
   return cloudinary.url(publicId, {
     type: 'authenticated',
     resource_type: resourceType,

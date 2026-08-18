@@ -3,6 +3,8 @@ const Doctor = require('../models/Doctor');
 const Hospital = require('../models/Hospital');
 const Lab = require('../models/Lab');
 const LabTest = require('../models/LabTest');
+const Pharmacy = require('../models/Pharmacy');
+const Medicine = require('../models/Medicine');
 const User = require('../models/User');
 const { encrypt, decrypt } = require('../utils/helpers');
 const { success, fail } = require('../utils/response');
@@ -180,11 +182,58 @@ async function listLabTests(req, res) {
   return success(res, tests);
 }
 
+async function listPharmacies(req, res) {
+  const { lat, lng } = req.query;
+
+  const pharmacyUsers = await User.find({ role: 'pharmacy', verificationStatus: 'verified' });
+  const verifiedIds = pharmacyUsers.map((u) => u._id);
+
+  let pharmacyRecords;
+  let locationSorted = false;
+
+  if (lat && lng) {
+    pharmacyRecords = await Pharmacy.find({
+      userId: { $in: verifiedIds },
+      location: {
+        $near: {
+          $geometry: { type: 'Point', coordinates: [Number(lng), Number(lat)] }
+        }
+      }
+    });
+    locationSorted = true;
+  } else {
+    pharmacyRecords = await Pharmacy.find({ userId: { $in: verifiedIds } });
+  }
+
+  const results = pharmacyRecords.map((record) => ({
+    pharmacyId: record.userId,
+    pharmacyName: record.pharmacyName,
+    city: record.city
+  }));
+
+  return success(res, { pharmacies: results, locationSorted });
+}
+
+async function listPharmacyMedicines(req, res) {
+  const { pharmacyId } = req.params;
+
+  const pharmacyUser = await User.findOne({ _id: pharmacyId, role: 'pharmacy', verificationStatus: 'verified' });
+  if (!pharmacyUser) {
+    return fail(res, 'Pharmacy not found', 404);
+  }
+
+  const medicines = await Medicine.find({ pharmacyId, stock: { $gt: 0 } }).sort({ name: 1 });
+
+  return success(res, medicines);
+}
+
 module.exports = {
   getProfile: asyncHandler(getProfile),
   updateProfile: asyncHandler(updateProfile),
   listDoctors: asyncHandler(listDoctors),
   listHospitals: asyncHandler(listHospitals),
   listLabs: asyncHandler(listLabs),
-  listLabTests: asyncHandler(listLabTests)
+  listLabTests: asyncHandler(listLabTests),
+  listPharmacies: asyncHandler(listPharmacies),
+  listPharmacyMedicines: asyncHandler(listPharmacyMedicines)
 };
