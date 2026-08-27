@@ -1,8 +1,8 @@
 const Lab = require('../models/Lab');
 const LabTest = require('../models/LabTest');
-const TestBooking = require('../models/TestBooking');
-const { decrypt } = require('../utils/helpers');
-const { getSignedViewUrl } = require('../services/cloudinaryService');
+const User = require('../models/User');
+const { decrypt, encrypt, hashForLookup } = require('../utils/helpers');
+const { getSignedViewUrl, uploadBuffer } = require('../services/cloudinaryService');
 const { success, fail } = require('../utils/response');
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -94,11 +94,63 @@ async function deleteTest(req, res) {
   return success(res, { message: 'Test removed' });
 }
 
+async function resubmitApplication(req, res) {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return fail(res, 'Account not found', 404);
+  }
+
+  if (user.verificationStatus !== 'rejected') {
+    return fail(res, 'Only rejected applications can be resubmitted');
+  }
+
+  const { labName, licenseNumber, city, lat, lng } = req.body;
+  const doc = req.files?.document?.[0];
+
+  if (!labName || !licenseNumber || !city || !lat || !lng) {
+    return fail(res, 'All fields are required to resubmit your application');
+  }
+
+  if (!doc) {
+    return fail(res, 'Please re-upload your verification document');
+  }
+
+  const docUpload = await uploadBuffer(doc.buffer, 'labs');
+
+  try {
+    await Lab.findOneAndUpdate(
+      { userId: req.user.id },
+      {
+        labName,
+        licenseNumberEncrypted: encrypt(licenseNumber),
+        licenseNumberHash: hashForLookup(licenseNumber),
+        documentUrl: docUpload.url,
+        documentPublicId: docUpload.publicId,
+        city,
+        location: { type: 'Point', coordinates: [Number(lng), Number(lat)] }
+      },
+      { runValidators: true }
+    );
+  } catch (err) {
+    if (err.code === 11000) {
+      return fail(res, 'This license number is already registered to another account', 409);
+    }
+    throw err;
+  }
+
+  user.verificationStatus = 'pending';
+  user.rejectionReason = null;
+  await user.save();
+
+  return success(res, { message: 'Application resubmitted for review' });
+}
+
 module.exports = {
   getProfile: asyncHandler(getProfile),
   updateProfile: asyncHandler(updateProfile),
   listMyTests: asyncHandler(listMyTests),
   addTest: asyncHandler(addTest),
   updateTest: asyncHandler(updateTest),
-  deleteTest: asyncHandler(deleteTest)
+  deleteTest: asyncHandler(deleteTest),
+  resubmitApplication: asyncHandler(resubmitApplication)
 };

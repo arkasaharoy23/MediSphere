@@ -113,7 +113,7 @@ async function addDegree(req, res) {
     return fail(res, 'Please upload a certificate for this degree');
   }
 
-  const record = await Doctor.findOne({ userId: req.user.id });
+  const record = await Doctor.findOne({ userId: req.user.id }).select('degree additionalDegrees');
   if (!record) {
     return fail(res, 'Doctor profile not found', 404);
   }
@@ -128,13 +128,20 @@ async function addDegree(req, res) {
 
   const certUpload = await uploadBuffer(certificate.buffer, 'doctors');
 
-  record.additionalDegrees.push({
-    degree,
-    certificateUrl: certUpload.url,
-    certificatePublicId: certUpload.publicId,
-    status: 'pending'
-  });
-  await record.save();
+  await Doctor.updateOne(
+    { userId: req.user.id },
+    {
+      $push: {
+        additionalDegrees: {
+          degree,
+          certificateUrl: certUpload.url,
+          certificatePublicId: certUpload.publicId,
+          status: 'pending'
+        }
+      }
+    },
+    { runValidators: true }
+  );
 
   return success(res, { message: 'Degree submitted for admin review' });
 }

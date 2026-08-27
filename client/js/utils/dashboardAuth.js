@@ -5,6 +5,8 @@ import { initLogout } from '../auth/logout.js';
 import { initSidebar } from '../components/sidebar.js';
 import { initTheme } from '../utils/theme.js';
 
+const REAPPLY_ROLES = ['doctor', 'hospital', 'lab', 'pharmacy'];
+
 function renderAvatar(profilePicUrl, email) {
   const avatarEl = document.querySelector('[data-topbar-avatar]');
   if (!avatarEl) return;
@@ -31,9 +33,9 @@ function renderStatusBanner(session) {
     const reasonText = rejectionReason ? ` Reason: ${rejectionReason}` : '';
     textEl.textContent = `Your verification was not approved.${reasonText}`;
 
-    if (role === 'doctor') {
+    if (REAPPLY_ROLES.includes(role)) {
       const link = document.createElement('a');
-      link.href = '../doctor/reapply.html';
+      link.href = `../${role}/reapply.html`;
       link.className = 'dash-banner__action';
       link.textContent = 'Update & resubmit';
       banner.appendChild(link);

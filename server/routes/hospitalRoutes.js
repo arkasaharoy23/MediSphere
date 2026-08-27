@@ -1,5 +1,6 @@
 const express = require('express');
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
 const {
   listDirectory,
   listDepartmentsForHospital,
@@ -12,10 +13,16 @@ const {
   listBeds,
   addBedCategory,
   updateBedCategory,
-  deleteBedCategory
+  deleteBedCategory,
+  resubmitApplication
 } = require('../controllers/hospitalController');
 
 const router = express.Router();
+
+const resubmitUpload = upload.fields([
+  { name: 'document1', maxCount: 1 },
+  { name: 'document2', maxCount: 1 }
+]);
 
 // Any authenticated role can browse verified hospitals (used by doctors picking an affiliation).
 router.get('/directory', protect, listDirectory);
@@ -36,5 +43,7 @@ router.get('/beds', listBeds);
 router.post('/beds', addBedCategory);
 router.put('/beds/:id', updateBedCategory);
 router.delete('/beds/:id', deleteBedCategory);
+
+router.put('/resubmit', resubmitUpload, resubmitApplication);
 
 module.exports = router;

@@ -2,6 +2,8 @@ const Hospital = require('../models/Hospital');
 const Doctor = require('../models/Doctor');
 const Appointment = require('../models/Appointment');
 const User = require('../models/User');
+const { encrypt, hashForLookup } = require('../utils/helpers');
+const { uploadBuffer } = require('../services/cloudinaryService');
 const { success, fail } = require('../utils/response');
 const asyncHandler = require('../utils/asyncHandler');
 
@@ -230,6 +232,62 @@ async function deleteBedCategory(req, res) {
   return success(res, { message: 'Bed category removed' });
 }
 
+async function resubmitApplication(req, res) {
+  const user = await User.findById(req.user.id);
+  if (!user) {
+    return fail(res, 'Account not found', 404);
+  }
+
+  if (user.verificationStatus !== 'rejected') {
+    return fail(res, 'Only rejected applications can be resubmitted');
+  }
+
+  const { hospitalName, address, licenseNumber, city, lat, lng } = req.body;
+  const doc1 = req.files?.document1?.[0];
+  const doc2 = req.files?.document2?.[0];
+
+  if (!hospitalName || !address || !licenseNumber || !city || !lat || !lng) {
+    return fail(res, 'All fields are required to resubmit your application');
+  }
+
+  if (!doc1 || !doc2) {
+    return fail(res, 'Please re-upload both verification documents');
+  }
+
+  const [upload1, upload2] = await Promise.all([
+    uploadBuffer(doc1.buffer, 'hospitals'),
+    uploadBuffer(doc2.buffer, 'hospitals')
+  ]);
+
+  try {
+    await Hospital.findOneAndUpdate(
+      { userId: req.user.id },
+      {
+        hospitalName,
+        address,
+        licenseNumberEncrypted: encrypt(licenseNumber),
+        licenseNumberHash: hashForLookup(licenseNumber),
+        documentUrls: [upload1.url, upload2.url],
+        documentPublicIds: [upload1.publicId, upload2.publicId],
+        city,
+        location: { type: 'Point', coordinates: [Number(lng), Number(lat)] }
+      },
+      { runValidators: true }
+    );
+  } catch (err) {
+    if (err.code === 11000) {
+      return fail(res, 'This license number is already registered to another account', 409);
+    }
+    throw err;
+  }
+
+  user.verificationStatus = 'pending';
+  user.rejectionReason = null;
+  await user.save();
+
+  return success(res, { message: 'Application resubmitted for review' });
+}
+
 module.exports = {
   listDirectory: asyncHandler(listDirectory),
   listDepartmentsForHospital: asyncHandler(listDepartmentsForHospital),
@@ -242,5 +300,6 @@ module.exports = {
   listBeds: asyncHandler(listBeds),
   addBedCategory: asyncHandler(addBedCategory),
   updateBedCategory: asyncHandler(updateBedCategory),
-  deleteBedCategory: asyncHandler(deleteBedCategory)
+  deleteBedCategory: asyncHandler(deleteBedCategory),
+  resubmitApplication: asyncHandler(resubmitApplication)
 };

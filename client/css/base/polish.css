@@ -1,0 +1,449 @@
+:root {
+  color-scheme: light;
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-teal) 34%, transparent);
+  --skeleton-base: color-mix(in srgb, var(--color-ink) 8%, var(--color-bg-raised));
+  --skeleton-shine: color-mix(in srgb, var(--color-ink) 3%, var(--color-bg-raised));
+  --tap-target: 44px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --skeleton-base: color-mix(in srgb, #ffffff 8%, var(--color-bg-raised));
+  --skeleton-shine: color-mix(in srgb, #ffffff 3%, var(--color-bg-raised));
+}
+
+/* Smooth, flicker-free theme switch (never animates layout) */
+html[data-theme] body,
+html[data-theme] .navbar,
+html[data-theme] .sidebar,
+html[data-theme] .card,
+html[data-theme] .modal-card,
+html[data-theme] .toast {
+  transition: background-color 0.25s var(--ease-out), border-color 0.25s var(--ease-out),
+    color 0.25s var(--ease-out);
+}
+
+/* Dark-mode surfaces that were tuned for a light page */
+[data-theme="dark"] .modal-overlay {
+  background: rgba(3, 12, 21, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+[data-theme="dark"] .hero::before,
+[data-theme="dark"] .dash-card::before,
+[data-theme="dark"] .stat-card::before {
+  opacity: 0.35;
+}
+
+[data-theme="dark"] img:not([src$=".svg"]),
+[data-theme="dark"] .pulse svg {
+  filter: saturate(0.92) brightness(0.94);
+}
+
+[data-theme="dark"] .sidebar {
+  background: var(--color-bg-raised);
+  border-right: 1px solid var(--color-line);
+}
+
+/* Theme toggle: crescent for light, filled sun-ish glow for dark */
+.theme-toggle {
+  position: relative;
+  min-width: var(--tap-target);
+  min-height: var(--tap-target);
+}
+
+.theme-toggle svg {
+  transition: transform 0.4s var(--ease-out), opacity 0.2s var(--ease-out);
+}
+
+[data-theme="dark"] .theme-toggle {
+  border-color: color-mix(in srgb, var(--color-teal) 45%, transparent);
+  color: var(--color-teal-soft);
+}
+
+[data-theme="dark"] .theme-toggle svg {
+  transform: rotate(-24deg);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-teal) 26%, transparent);
+  color: var(--color-ink);
+}
+
+/* ---------- 2. Accessibility: focus, targets, motion ------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 3px;
+  box-shadow: var(--focus-ring);
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 1px;
+  box-shadow: var(--focus-ring);
+}
+
+/* Focus on dark navy surfaces needs a light ring to stay visible */
+.sidebar :focus-visible,
+.footer :focus-visible,
+.btn--primary:focus-visible {
+  outline-color: var(--color-on-navy, #F4F8FB);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-teal) 55%, transparent);
+}
+
+/* Keyboard-reachable skip/hidden links become visible on focus */
+.sr-only:focus,
+.sr-only:focus-visible,
+.sr-only:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-teal);
+  border-radius: var(--radius-sm);
+}
+
+/* Comfortable tap targets on touch devices */
+@media (pointer: coarse) {
+  .btn,
+  .nav-toggle,
+  .theme-toggle,
+  .sidebar-toggle,
+  .sidebar__link,
+  .sidebar__logout,
+  .navbar__links a,
+  .modal-card .btn {
+    min-height: var(--tap-target);
+  }
+
+  .nav-toggle,
+  .theme-toggle,
+  .sidebar-toggle {
+    min-width: var(--tap-target);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-ink-soft: #3C566B;
+    --color-line: #9FB2C1;
+  }
+
+  [data-theme="dark"] {
+    --color-ink-soft: #C9DAE8;
+    --color-line: #3E6484;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  [class*="-empty"]::after {
+    animation: none !important;
+  }
+}
+
+/* ---------- 3. Loading states ------------------------------------------ */
+
+@keyframes ms-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@keyframes ms-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ms-pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 0%,
+    var(--skeleton-shine) 50%,
+    var(--skeleton-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: ms-shimmer 1.4s linear infinite;
+  border-radius: var(--radius-sm);
+  color: transparent !important;
+  pointer-events: none;
+}
+
+/* Buttons entering a busy/disabled state get an inline spinner */
+.btn[disabled],
+.btn:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+  position: relative;
+}
+
+button[disabled]:not(.btn) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn.is-loading::before,
+.btn[aria-busy="true"]::before {
+  content: '';
+  width: 14px;
+  height: 14px;
+  margin-right: var(--space-2);
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  opacity: 0.85;
+  animation: ms-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* Forms being submitted read as inert */
+form[aria-busy="true"],
+[aria-busy="true"] {
+  cursor: progress;
+}
+
+/* ---------- 4. Empty / loading placeholder panels ---------------------- */
+
+[class].hosp-empty,
+[class].appt-empty,
+[class].record-empty,
+[class].review-empty,
+[class].sos-empty {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 180px;
+  padding: var(--space-7) var(--space-5);
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--color-ink-soft);
+  background:
+    radial-gradient(420px 160px at 50% -40px, color-mix(in srgb, var(--color-teal) 8%, transparent), transparent 70%),
+    var(--color-bg-raised);
+  border: 1px dashed var(--color-line-strong);
+  border-radius: var(--radius-lg);
+  animation: ms-pulse-soft 2.4s ease-in-out infinite;
+}
+
+[class].hosp-empty::before,
+[class].appt-empty::before,
+[class].record-empty::before,
+[class].review-empty::before,
+[class].sos-empty::before {
+  content: '';
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--color-teal-tint);
+  border: 1px solid color-mix(in srgb, var(--color-teal) 28%, transparent);
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-teal) 6%, transparent);
+}
+
+/* ---------- 5. Mobile responsiveness ----------------------------------- */
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 1024px) {
+  .dash-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .container {
+    padding-inline: var(--space-4);
+  }
+
+  .navbar__inner {
+    padding-inline: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .navbar__links {
+    gap: var(--space-2);
+  }
+
+  .navbar__links a {
+    width: 100%;
+    padding-block: var(--space-3);
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --space-7: 36px;
+    --space-8: 48px;
+    --space-9: 64px;
+  }
+
+  .dash-grid,
+  .stat-grid,
+  .card-grid,
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Any row that pairs copy with actions stacks instead of squeezing */
+  .hosp-card,
+  .appt-card,
+  .record-card,
+  .review-card,
+  .page-head,
+  .dash-welcome,
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .hosp-card > *,
+  .appt-card > * {
+    min-width: 0;
+  }
+
+  .dash-banner {
+    flex-wrap: wrap;
+  }
+
+  .dash-banner__action {
+    margin-left: 0;
+  }
+
+  /* Tables scroll horizontally rather than overflow the viewport */
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Toasts span the width and sit clear of the notch */
+  [data-toast-container] {
+    top: auto;
+    bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+    left: var(--space-4);
+    right: var(--space-4);
+  }
+
+  .toast {
+    max-width: none;
+    transform: translateY(16px);
+  }
+
+  .toast[data-visible="true"] {
+    transform: translateY(0);
+  }
+
+  /* Modals become bottom sheets */
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-card {
+    max-width: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Inputs at >=16px stop iOS from zooming on focus */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 520px) {
+  h1 {
+    font-size: clamp(1.9rem, 8vw, 2.4rem);
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .navbar__actions .btn,
+  .btn--sm,
+  .modal-card .btn--ghost {
+    width: auto;
+  }
+
+  [class].hosp-empty,
+  [class].appt-empty,
+  [class].record-empty,
+  [class].review-empty,
+  [class].sos-empty {
+    min-height: 150px;
+    padding: var(--space-6) var(--space-4);
+  }
+}
+
+/* ---------- 6. Dark-mode logo & navy surfaces -------------------------- */
+
+[data-theme="dark"] .navbar__brand svg circle:first-of-type,
+[data-theme="dark"] .sidebar__brand svg circle:first-of-type,
+[data-theme="dark"] .footer svg circle:first-of-type,
+[data-theme="dark"] .auth-brand svg circle:first-of-type {
+  stroke: var(--color-ink-soft);
+}
+
+[data-theme="dark"] .footer {
+  background: var(--color-bg-sunken);
+  color: var(--color-ink);
+  border-top: 1px solid var(--color-line);
+}
+
+[data-theme="dark"] .footer a {
+  color: var(--color-ink-soft);
+}
+
+[data-theme="dark"] .footer a:hover {
+  color: var(--color-teal-soft);
+}
+
+[data-theme="dark"] .sidebar__link,
+[data-theme="dark"] .sidebar__logout {
+  color: var(--color-ink-soft);
+}
+
+[data-theme="dark"] .sidebar__link:hover,
+[data-theme="dark"] .sidebar__link[data-active="true"] {
+  background: color-mix(in srgb, var(--color-teal) 16%, transparent);
+  color: var(--color-ink);
+}
+
+[data-theme="dark"] .sidebar__brand {
+  color: var(--color-ink);
+}
