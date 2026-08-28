@@ -27,10 +27,11 @@
   opacity: 1;
 }
 
-.toast--error {
-  border-left-color: var(--color-coral);
-}
-
-.toast--success {
-  border-left-color: var(--color-teal);
+.toast--error { border-left-color: var(--color-coral); }
+.toast--success { border-left-color: var(--color-teal); }
+/* --- Refinement layer --------------------------------------------------- */
+.toast {
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(8px);
 }

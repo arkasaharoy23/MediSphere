@@ -1,0 +1,349 @@
+.hero .pulse, [class].pulse {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid color-mix(in srgb, var(--color-teal) 24%, var(--color-on-navy-line));
+  background:
+    radial-gradient(680px 220px at 50% -60px, color-mix(in srgb, var(--color-teal) 30%, transparent), transparent 70%),
+    var(--gradient-navy);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.hero .pulse::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(70% 80% at 50% 40%, #000 40%, transparent 100%);
+  pointer-events: none;
+}
+
+.hero .pulse::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 26%;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-teal) 20%, transparent), transparent);
+  animation: pulse-sweep 5.5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-sweep {
+  from { transform: translateX(-120%); }
+  to { transform: translateX(480%); }
+}
+
+[class].pulse__svg {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+
+[class].pulse__trace {
+  stroke: var(--color-teal-soft);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-teal-soft) 65%, transparent));
+}
+
+[class].pulse__node {
+  fill: var(--color-navy-dark);
+  stroke: var(--color-teal-soft);
+  stroke-width: 2.5;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--color-teal-soft) 55%, transparent));
+  transition: fill 0.2s var(--ease-out), r 0.2s var(--ease-out);
+}
+
+[class].pulse__node:hover,
+[class].pulse__node:focus-visible {
+  fill: var(--color-teal-soft);
+  r: 9;
+}
+
+[class].pulse__glow {
+  fill: #EAFFFB;
+  filter: drop-shadow(0 0 8px var(--color-teal-soft));
+}
+
+[class].pulse__labels {
+  display: none !important;
+}
+
+[class].pulse__labels-legacy {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--space-5);
+  gap: var(--space-2);
+}
+
+[class].pulse__labels button {
+  min-height: 40px;
+  padding: 8px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-on-navy-soft);
+  letter-spacing: 0.1em;
+  transition: color 0.2s var(--ease-out), background 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+[class].pulse__labels button:hover {
+  background: color-mix(in srgb, var(--color-teal) 26%, transparent);
+  border-color: color-mix(in srgb, var(--color-teal-soft) 60%, transparent);
+  color: #EAFFFB;
+  transform: translateY(-1px);
+}
+
+[class].pulse__labels button:focus-visible {
+  outline-color: #EAFFFB;
+}
+
+@media (max-width: 720px) {
+  .hero .pulse, [class].pulse {
+    padding: var(--space-5) var(--space-4) var(--space-4);
+  }
+
+  [class].pulse__svg {
+    min-height: 96px;
+  }
+
+  [class].pulse__node { r: 10; }
+
+  [class].pulse__labels {
+    grid-template-columns: repeat(2, 1fr) !important;
+    row-gap: var(--space-2);
+  }
+
+  [class].pulse__labels button {
+    min-height: 44px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .pulse::after { animation: none; opacity: 0; }
+}
+
+[class].topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--color-bg) 82%, transparent);
+  backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid var(--color-line);
+}
+
+[class].app-content {
+  padding-bottom: var(--space-9);
+}
+
+[class].topbar__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+[class].topbar__avatar {
+  border: 1px solid var(--color-line-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+[class].appt-card,
+[class].hosp-card,
+[class].record-card,
+[class].review-card,
+[class].bed-card,
+[class].stat-card,
+[class].chart-card,
+[class].sos-active-card,
+[class].sos-history-card,
+[class].sos-panel,
+[class].patients-table-wrap,
+[class].users-table-wrap {
+  background: var(--gradient-surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
+    border-color 0.2s var(--ease-out);
+}
+
+[class].appt-card:hover,
+[class].hosp-card:hover,
+[class].record-card:hover,
+[class].review-card:hover,
+[class].bed-card:hover,
+[class].stat-card:hover {
+  border-color: color-mix(in srgb, var(--color-teal) 38%, var(--color-line));
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+[class].stat-card__icon,
+[class].dash-card__icon {
+  border: 1px solid color-mix(in srgb, var(--color-teal) 18%, transparent);
+}
+
+[class].appt-section h2,
+[class].section__head h2 {
+  letter-spacing: -0.015em;
+}
+
+[class].status-badge,
+[class].stock-badge,
+[class].rx-badge,
+[class].record-type-badge,
+[class].blood-group-badge,
+[class].hosp-card__tag,
+[class].review-card__role-badge {
+  border: 1px solid currentColor;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge--confirmed,
+.status-badge--completed,
+.status-badge--delivered,
+.status-badge--verified {
+  color: var(--color-success);
+  background: var(--color-success-tint);
+}
+
+.status-badge--pending,
+.status-badge--processing,
+.status-badge--sample_collected,
+.status-badge--out_for_delivery {
+  color: var(--color-amber);
+  background: var(--color-amber-tint);
+}
+
+.status-badge--cancelled,
+.status-badge--rejected {
+  color: var(--color-coral-dark);
+  background: var(--color-coral-tint);
+}
+
+[class].status-tabs,
+[class].filter-bar {
+  gap: var(--space-2);
+}
+
+@media (max-width: 720px) {
+  [class].status-tabs,
+  [class].filter-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--space-1);
+  }
+
+  [class].status-tabs::-webkit-scrollbar,
+  [class].filter-bar::-webkit-scrollbar { display: none; }
+
+  [class].status-tabs > *,
+  [class].filter-bar > * {
+    flex: 0 0 auto;
+  }
+}
+
+[class].patients-table thead th,
+[class].users-table thead th,
+[class].medicine-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  backdrop-filter: blur(6px);
+}
+
+[class].patients-table tbody tr,
+[class].users-table tbody tr,
+[class].medicine-table tbody tr {
+  transition: background 0.15s var(--ease-out);
+}
+
+[class].patients-table-wrap,
+[class].users-table-wrap {
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 900px) {
+  [class].app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  [class].stat-cards,
+  [class].chart-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  [class].app-content {
+    padding-inline: var(--space-4);
+  }
+
+  [class].stat-cards,
+  [class].chart-grid,
+  [class].role-select-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  [class].appt-card__meta,
+  [class].hosp-card__meta,
+  [class].review-actions,
+  [class].bed-card__actions,
+  [class].kyc-docs {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  [class].appt-card__meta .btn,
+  [class].review-actions .btn,
+  [class].bed-card__actions .btn {
+    flex: 1 1 auto;
+  }
+
+  [class].dash-banner {
+    align-items: flex-start;
+  }
+
+  [class].form-card {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  [class].medicine-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+[class].auth-card {
+  box-shadow: var(--shadow-lg);
+}
+
+[class].role-option {
+  transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out),
+    transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+
+[class].role-option:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 860px) {
+  [class].auth-split {
+    grid-template-columns: 1fr !important;
+  }
+
+  [class].auth-split__aside {
+    display: none;
+  }
+}

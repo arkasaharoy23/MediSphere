@@ -12,7 +12,6 @@
   --skeleton-shine: color-mix(in srgb, #ffffff 3%, var(--color-bg-raised));
 }
 
-/* Smooth, flicker-free theme switch (never animates layout) */
 html[data-theme] body,
 html[data-theme] .navbar,
 html[data-theme] .sidebar,
@@ -23,7 +22,6 @@ html[data-theme] .toast {
     color 0.25s var(--ease-out);
 }
 
-/* Dark-mode surfaces that were tuned for a light page */
 [data-theme="dark"] .modal-overlay {
   background: rgba(3, 12, 21, 0.7);
   backdrop-filter: blur(4px);
@@ -45,7 +43,6 @@ html[data-theme] .toast {
   border-right: 1px solid var(--color-line);
 }
 
-/* Theme toggle: crescent for light, filled sun-ish glow for dark */
 .theme-toggle {
   position: relative;
   min-width: var(--tap-target);
@@ -70,8 +67,6 @@ html[data-theme] .toast {
   color: var(--color-ink);
 }
 
-/* ---------- 2. Accessibility: focus, targets, motion ------------------- */
-
 :focus-visible {
   outline: 2px solid var(--color-teal);
   outline-offset: 3px;
@@ -95,7 +90,6 @@ textarea:focus-visible {
   box-shadow: var(--focus-ring);
 }
 
-/* Focus on dark navy surfaces needs a light ring to stay visible */
 .sidebar :focus-visible,
 .footer :focus-visible,
 .btn--primary:focus-visible {
@@ -103,7 +97,6 @@ textarea:focus-visible {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-teal) 55%, transparent);
 }
 
-/* Keyboard-reachable skip/hidden links become visible on focus */
 .sr-only:focus,
 .sr-only:focus-visible,
 .sr-only:focus-within {
@@ -119,7 +112,6 @@ textarea:focus-visible {
   border-radius: var(--radius-sm);
 }
 
-/* Comfortable tap targets on touch devices */
 @media (pointer: coarse) {
   .btn,
   .nav-toggle,
@@ -158,8 +150,6 @@ textarea:focus-visible {
   }
 }
 
-/* ---------- 3. Loading states ------------------------------------------ */
-
 @keyframes ms-shimmer {
   from { background-position: 200% 0; }
   to { background-position: -200% 0; }
@@ -188,7 +178,6 @@ textarea:focus-visible {
   pointer-events: none;
 }
 
-/* Buttons entering a busy/disabled state get an inline spinner */
 .btn[disabled],
 .btn:disabled {
   opacity: 0.72;
@@ -215,13 +204,10 @@ button[disabled]:not(.btn) {
   flex-shrink: 0;
 }
 
-/* Forms being submitted read as inert */
 form[aria-busy="true"],
 [aria-busy="true"] {
   cursor: progress;
 }
-
-/* ---------- 4. Empty / loading placeholder panels ---------------------- */
 
 [class].hosp-empty,
 [class].appt-empty,
@@ -260,8 +246,6 @@ form[aria-busy="true"],
   border: 1px solid color-mix(in srgb, var(--color-teal) 28%, transparent);
   box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-teal) 6%, transparent);
 }
-
-/* ---------- 5. Mobile responsiveness ----------------------------------- */
 
 html {
   -webkit-tap-highlight-color: transparent;
@@ -313,7 +297,6 @@ body {
     grid-template-columns: 1fr !important;
   }
 
-  /* Any row that pairs copy with actions stacks instead of squeezing */
   .hosp-card,
   .appt-card,
   .record-card,
@@ -339,7 +322,6 @@ body {
     margin-left: 0;
   }
 
-  /* Tables scroll horizontally rather than overflow the viewport */
   table {
     display: block;
     width: 100%;
@@ -347,7 +329,6 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Toasts span the width and sit clear of the notch */
   [data-toast-container] {
     top: auto;
     bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
@@ -364,7 +345,6 @@ body {
     transform: translateY(0);
   }
 
-  /* Modals become bottom sheets */
   .modal-overlay {
     align-items: flex-end;
     padding: 0;
@@ -376,7 +356,6 @@ body {
     padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
   }
 
-  /* Inputs at >=16px stop iOS from zooming on focus */
   input,
   select,
   textarea {
@@ -409,8 +388,6 @@ body {
     padding: var(--space-6) var(--space-4);
   }
 }
-
-/* ---------- 6. Dark-mode logo & navy surfaces -------------------------- */
 
 [data-theme="dark"] .navbar__brand svg circle:first-of-type,
 [data-theme="dark"] .sidebar__brand svg circle:first-of-type,

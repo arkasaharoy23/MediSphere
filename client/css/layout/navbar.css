@@ -26,10 +26,7 @@
   font-size: 1.3rem;
 }
 
-.navbar__brand svg {
-  width: 30px;
-  height: 30px;
-}
+.navbar__brand svg { width: 30px; height: 30px; }
 
 .navbar__links {
   display: flex;
@@ -71,10 +68,7 @@
   color: var(--color-teal);
 }
 
-.theme-toggle svg {
-  width: 18px;
-  height: 18px;
-}
+.theme-toggle svg { width: 18px; height: 18px; }
 
 .nav-toggle {
   display: none;
@@ -86,10 +80,7 @@
   justify-content: center;
 }
 
-.nav-toggle svg {
-  width: 18px;
-  height: 18px;
-}
+.nav-toggle svg { width: 18px; height: 18px; }
 
 @media (max-width: 860px) {
   .navbar__links {
@@ -114,11 +105,61 @@
     pointer-events: auto;
   }
 
-  .navbar .btn--ghost {
-    display: none;
-  }
+  .navbar .btn--ghost { display: none; }
 
-  .nav-toggle {
-    display: inline-flex;
-  }
+  .nav-toggle { display: inline-flex; }
+}
+/* --- Refinement layer --------------------------------------------------- */
+.navbar {
+  background: color-mix(in srgb, var(--color-bg-raised) 78%, transparent);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom-color: color-mix(in srgb, var(--color-line) 80%, transparent);
+}
+
+.navbar__inner {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.navbar__brand { letter-spacing: -0.02em; }
+
+.navbar__brand svg { transition: transform 0.3s var(--ease-out); }
+
+.navbar__brand:hover svg {
+  transform: scale(1.06) rotate(-4deg);
+}
+
+.navbar__links a {
+  position: relative;
+  padding: 6px 2px;
+}
+
+.navbar__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-teal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s var(--ease-out);
+}
+
+.navbar__links a:hover::after,
+.navbar__links a:focus-visible::after {
+  transform: scaleX(1);
+}
+
+.theme-toggle {
+  background: var(--color-bg-raised);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle:hover { background: var(--color-teal-tint); }
+
+@media (max-width: 860px) {
+  .navbar__links a::after { display: none; }
 }

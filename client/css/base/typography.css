@@ -1,56 +1,70 @@
 body {
   font-family: var(--font-body);
   color: var(--color-ink);
-  background: var(--color-bg);
+  background-color: var(--color-bg);
+  background-image: var(--gradient-page);
+  background-repeat: no-repeat;
   font-size: 16px;
+  font-feature-settings: "cv02", "cv03", "cv04", "ss01";
+  letter-spacing: -0.005em;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.01em;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
   color: var(--color-ink);
+  text-wrap: balance;
 }
 
-h1 {
-  font-size: clamp(2.6rem, 5.5vw, 4.6rem);
-}
-
-h2 {
-  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
-}
-
-h3 {
-  font-size: 1.4rem;
-}
+h1 { font-size: clamp(2.4rem, 5vw, 4.1rem); }
+h2 { font-size: clamp(1.8rem, 3.2vw, 2.5rem); }
+h3 { font-size: 1.35rem; }
+h4 { font-size: 1.05rem; }
 
 p {
   color: var(--color-ink-soft);
+  text-wrap: pretty;
+}
+
+strong {
+  color: var(--color-ink);
+  font-weight: 600;
 }
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-teal);
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  padding: 6px 14px 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-teal-tint);
+  border: 1px solid color-mix(in srgb, var(--color-teal) 18%, transparent);
 }
 
-.eyebrow svg {
-  flex-shrink: 0;
-}
+.eyebrow svg { flex-shrink: 0; }
 
 .stat-figure {
   font-family: var(--font-mono);
   font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
 .lede {
-  font-size: 1.15rem;
-  line-height: 1.6;
+  font-size: 1.1rem;
+  line-height: 1.65;
   max-width: 46ch;
+  color: var(--color-ink-soft);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-teal) 22%, transparent);
+  color: var(--color-ink);
 }
