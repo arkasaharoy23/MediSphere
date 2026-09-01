@@ -2,6 +2,7 @@ import { verifyPasswordResetCode, confirmPasswordReset } from 'https://www.gstat
 import { auth } from '../config/firebase.js';
 import { showToast } from '../components/toast.js';
 import { initTheme } from '../utils/theme.js';
+import { initLoader, destroyLoader } from './initLottieLoader.js';
 
 function showSection(name) {
   document.querySelectorAll('[data-reset-section]').forEach((el) => {
@@ -61,13 +62,16 @@ async function init() {
   }
 
   showSection('checking');
+  initLoader('resetLoaderContainer');
 
   try {
     const email = await verifyPasswordResetCode(auth, oobCode);
+    destroyLoader('resetLoaderContainer');
     document.querySelector('[data-reset-email]').textContent = email;
     showSection('form');
     initResetForm(oobCode);
   } catch (err) {
+    destroyLoader('resetLoaderContainer');
     document.querySelector('[data-reset-error-message]').textContent = friendlyError(err);
     showSection('error');
   }

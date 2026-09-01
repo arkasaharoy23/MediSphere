@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Location Tracking — MediSphere</title>
+<title>My Profile — MediSphere</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
@@ -36,11 +36,11 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15 9L22 10L17 15L18 22L12 18.5L6 22L7 15L2 10L9 9L12 2Z" stroke-linejoin="round"/></svg>
         Emergency Requests
       </a>
-      <a href="tracking.html" class="sidebar__link" data-active="true">
+      <a href="tracking.html" class="sidebar__link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 6V11C4 16 7.5 20 12 22C16.5 20 20 16 20 11V6L12 2Z" stroke-linejoin="round"/></svg>
         Location Tracking
       </a>
-      <a href="profile.html" class="sidebar__link">
+      <a href="profile.html" class="sidebar__link" data-active="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21C4 16.5 7.5 14 12 14C16.5 14 20 16.5 20 21" stroke-linecap="round"/></svg>
         Profile
       </a>
@@ -59,7 +59,7 @@
         <button class="sidebar-toggle" data-sidebar-toggle aria-label="Open menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6H20M4 12H20M4 18H20" stroke-linecap="round"/></svg>
         </button>
-        <span class="topbar__title">Location Tracking</span>
+        <span class="topbar__title">Profile</span>
       </div>
 
       <div class="topbar__actions">
@@ -73,7 +73,7 @@
     <main class="app-content">
 
       <div class="dash-welcome">
-        <h1>Location tracking</h1>
+        <h1>My profile</h1>
         <p data-user-name>Loading...</p>
       </div>
 
@@ -83,24 +83,88 @@
       </div>
 
       <div class="form-card">
-        <h2 class="form-card__heading">Share your live location</h2>
-        <p class="kyc-note">While sharing is on, your position updates automatically every few seconds so dispatch and the assigned patient's hospital know where you are.</p>
+        <h2 class="form-card__heading">Availability</h2>
 
-        <div class="tracking-status">
-          <span class="tracking-status__dot" data-tracking-dot></span>
+        <div class="availability-toggle">
+          <label class="availability-toggle__switch">
+            <input type="checkbox" id="available">
+            <span class="availability-toggle__slider"></span>
+          </label>
           <div>
-            <div data-tracking-label style="font-weight:600;">Not sharing location</div>
-            <div class="tracking-coords" data-tracking-coords></div>
+            <div style="font-weight:600;">Available for new requests</div>
+            <div style="font-size:0.82rem;color:var(--color-ink-soft);">Turn this off if you're off duty or already on a call.</div>
           </div>
         </div>
 
-        <button type="button" class="btn btn--primary" data-toggle-tracking-btn>Start sharing location</button>
+        <h2 class="form-card__heading">Vehicle &amp; driver details</h2>
+
+        <form data-profile-form novalidate>
+
+          <div class="form-field">
+            <label for="driverName">Driver name</label>
+            <input type="text" id="driverName" name="driverName" required>
+          </div>
+
+          <div class="form-field">
+            <label for="city">Base city</label>
+            <input type="text" id="city" name="city" required>
+          </div>
+
+          <div class="form-field">
+            <label>Base location</label>
+            <button type="button" class="btn btn--ghost btn--sm" data-detect-location-btn>Re-detect location</button>
+            <small data-location-status>Only updates if you re-detect — leave as is to keep your current location.</small>
+            <input type="hidden" id="lat" name="lat">
+            <input type="hidden" id="lng" name="lng">
+          </div>
+
+          <button type="submit" class="btn btn--primary">Save changes</button>
+        </form>
+      </div>
+
+      <div class="form-card">
+        <h2 class="form-card__heading">Verified credentials</h2>
+        <p class="kyc-note">These were verified by MediSphere admin at registration and can't be edited here. Contact support if any of this needs to change.</p>
+
+        <div class="kyc-fields">
+          <div class="kyc-field">
+            <label>Vehicle registration number</label>
+            <span data-vehicle-number>—</span>
+          </div>
+          <div class="kyc-field">
+            <label>Driver's license number</label>
+            <span data-license-number>—</span>
+          </div>
+        </div>
+
+        <div class="kyc-docs">
+          <a href="#" target="_blank" rel="noopener" data-rc-link>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
+            View vehicle RC
+          </a>
+          <a href="#" target="_blank" rel="noopener" data-license-doc-link>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
+            View driver's license
+          </a>
+          <a href="#" target="_blank" rel="noopener" data-photo-link>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
+            View driver photo
+          </a>
+          <a href="#" target="_blank" rel="noopener" data-id-doc-link>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
+            View driver ID document
+          </a>
+          <a href="#" target="_blank" rel="noopener" data-permit-link>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H15M10 3V9L5 18C4.5 19 5 20 6.5 20H17.5C19 20 19.5 19 19 18L14 9V3" stroke-linejoin="round"/></svg>
+            View permit document
+          </a>
+        </div>
       </div>
 
     </main>
   </div>
 </div>
 
-<script type="module" src="../../js/ambulance/tracking.js"></script>
+<script type="module" src="../../js/ambulance/profile.js"></script>
 </body>
 </html>

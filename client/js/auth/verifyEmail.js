@@ -2,6 +2,7 @@ import { applyActionCode, sendEmailVerification, onAuthStateChanged } from 'http
 import { auth } from '../config/firebase.js';
 import { showToast } from '../components/toast.js';
 import { initTheme } from '../utils/theme.js';
+import { initLoader, destroyLoader } from './initLottieLoader.js';
 
 let currentUser = null;
 
@@ -14,10 +15,14 @@ function showSection(name) {
 
 async function handleActionCode(oobCode) {
   showSection('checking');
+  initLoader('verifyLoaderContainer');
+
   try {
     await applyActionCode(auth, oobCode);
+    destroyLoader('verifyLoaderContainer');
     showSection('success');
   } catch (err) {
+    destroyLoader('verifyLoaderContainer');
     document.querySelector('[data-verify-error-message]').textContent =
       'This link is invalid or has expired. Request a new one below.';
     showSection('error');

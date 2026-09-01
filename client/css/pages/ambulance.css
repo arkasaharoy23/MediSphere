@@ -1,0 +1,210 @@
+.hosp-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.hosp-empty {
+  color: var(--color-ink-soft);
+  padding: var(--space-5);
+  text-align: center;
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+}
+
+.hosp-card {
+  background: var(--color-bg-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hosp-card__info h3 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+.hosp-card__info p {
+  font-size: 0.86rem;
+  color: var(--color-ink-soft);
+  margin-top: 2px;
+}
+
+.hosp-card__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.form-card {
+  max-width: none;
+}
+
+.kyc-note {
+  font-size: 0.86rem;
+  color: var(--color-ink-soft);
+  margin-bottom: var(--space-4);
+}
+
+.kyc-fields {
+  margin-bottom: var(--space-5);
+}
+
+.kyc-field label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-ink-soft);
+  margin-bottom: 2px;
+}
+
+.kyc-field span {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.kyc-docs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.kyc-docs a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.86rem;
+  color: var(--color-teal);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.kyc-docs a:hover {
+  border-color: var(--color-teal);
+}
+
+.kyc-docs a svg {
+  width: 15px;
+  height: 15px;
+}
+
+.status-badge {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.status-badge--active {
+  color: var(--color-coral);
+  background: var(--color-coral-tint);
+}
+
+.status-badge--resolved {
+  color: var(--color-teal);
+  background: var(--color-teal-tint);
+}
+
+.status-badge--cancelled {
+  color: var(--color-ink-soft);
+  background: var(--color-line);
+}
+
+.availability-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-5);
+}
+
+.availability-toggle__switch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.availability-toggle__switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.availability-toggle__slider {
+  position: absolute;
+  inset: 0;
+  background: var(--color-line);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background 0.2s var(--ease-out);
+}
+
+.availability-toggle__slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 3px;
+  top: 3px;
+  background: var(--color-bg-raised);
+  border-radius: 50%;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.availability-toggle__switch input:checked + .availability-toggle__slider {
+  background: var(--color-teal);
+}
+
+.availability-toggle__switch input:checked + .availability-toggle__slider::before {
+  transform: translateX(20px);
+}
+
+.tracking-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-raised);
+  margin-bottom: var(--space-5);
+}
+
+.tracking-status__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-line);
+  flex-shrink: 0;
+}
+
+.tracking-status__dot--live {
+  background: var(--color-teal);
+  box-shadow: 0 0 0 4px var(--color-teal-tint);
+  animation: trackingPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes trackingPulse {
+  0%, 100% { box-shadow: 0 0 0 4px var(--color-teal-tint); }
+  50% { box-shadow: 0 0 0 8px var(--color-teal-tint); }
+}
+
+.tracking-coords {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  color: var(--color-ink-soft);
+}

@@ -5,7 +5,7 @@ import { initLogout } from '../auth/logout.js';
 import { initSidebar } from '../components/sidebar.js';
 import { initTheme } from '../utils/theme.js';
 
-const REAPPLY_ROLES = ['doctor', 'hospital', 'lab', 'pharmacy'];
+const REAPPLY_ROLES = ['doctor', 'hospital', 'lab', 'pharmacy', 'ambulance'];
 
 function renderAvatar(profilePicUrl, email) {
   const avatarEl = document.querySelector('[data-topbar-avatar]');

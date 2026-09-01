@@ -20,7 +20,13 @@ const ambulanceSchema = new mongoose.Schema({
   location: {
     type: { type: String, enum: ['Point'], default: 'Point' },
     coordinates: { type: [Number], required: true }
-  }
+  },
+  available: { type: Boolean, default: true },
+  currentLocation: {
+    type: { type: String, enum: ['Point'], default: 'Point' },
+    coordinates: { type: [Number], default: null }
+  },
+  locationUpdatedAt: { type: Date, default: null }
 }, { timestamps: true });
 
 ambulanceSchema.index({ location: '2dsphere' });
