@@ -1,5 +1,5 @@
 const express = require('express');
-const { protect, authorizeRoles } = require('../middleware/authMiddleware');
+const { protect, authorizeRoles, requireVerified } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 const {
   listDirectory,
@@ -31,18 +31,18 @@ router.get('/:hospitalUserId/departments', protect, listDepartmentsForHospital);
 router.use(protect, authorizeRoles('hospital'));
 
 router.get('/departments', listDepartments);
-router.post('/departments', addDepartment);
-router.delete('/departments/:id', deleteDepartment);
+router.post('/departments', requireVerified, addDepartment);
+router.delete('/departments/:id', requireVerified, deleteDepartment);
 
 router.get('/doctors', listAffiliatedDoctors);
-router.delete('/doctors/:doctorUserId', removeDoctorAffiliation);
+router.delete('/doctors/:doctorUserId', requireVerified, removeDoctorAffiliation);
 
 router.get('/appointments', listHospitalAppointments);
 
 router.get('/beds', listBeds);
-router.post('/beds', addBedCategory);
-router.put('/beds/:id', updateBedCategory);
-router.delete('/beds/:id', deleteBedCategory);
+router.post('/beds', requireVerified, addBedCategory);
+router.put('/beds/:id', requireVerified, updateBedCategory);
+router.delete('/beds/:id', requireVerified, deleteBedCategory);
 
 router.put('/resubmit', resubmitUpload, resubmitApplication);
 

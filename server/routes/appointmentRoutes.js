@@ -1,4 +1,5 @@
 const express = require('express');
+const { requireVerified } = require('../middleware/verificationMiddleware');
 const { protect, authorizeRoles } = require('../middleware/authMiddleware');
 const {
   createAppointment,
@@ -12,10 +13,10 @@ const router = express.Router();
 
 router.use(protect);
 
-router.post('/', authorizeRoles('patient'), createAppointment);
+router.post('/',protect, authorizeRoles('patient'), requireVerified, createAppointment);
 router.get('/mine', listMine);
 router.patch('/:id/cancel', cancelAppointment);
-router.patch('/:id/confirm', authorizeRoles('doctor'), confirmAppointment);
-router.patch('/:id/complete', authorizeRoles('doctor'), completeAppointment);
+router.patch('/:id/confirm', protect, authorizeRoles('doctor'), requireVerified, confirmAppointment);
+router.patch('/:id/complete', protect, authorizeRoles('doctor'), requireVerified, completeAppointment);
 
 module.exports = router;

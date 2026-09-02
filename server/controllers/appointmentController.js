@@ -7,41 +7,105 @@ const { success, fail } = require('../utils/response');
 const asyncHandler = require('../utils/asyncHandler');
 
 async function createAppointment(req, res) {
-  const { doctorId, date, timeSlot, reason, visitLocation } = req.body;
+  const {
+    doctorId,
+    date,
+    timeSlot,
+    reason,
+    visitLocation
+  } = req.body;
 
   if (!doctorId || !date || !timeSlot) {
-    return fail(res, 'doctorId, date, and timeSlot are required');
+    return fail(
+      res,
+      'doctorId, date, and timeSlot are required'
+    );
   }
 
-  if (new Date(date) < new Date().setHours(0, 0, 0, 0)) {
-    return fail(res, 'Appointment date cannot be in the past');
+  const parsedDate = new Date(date);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return fail(res, 'Invalid appointment date');
   }
 
-  const doctorUser = await User.findOne({ _id: doctorId, role: 'doctor', verificationStatus: 'verified' });
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (parsedDate < today) {
+    return fail(
+      res,
+      'Appointment date cannot be in the past'
+    );
+  }
+
+  if (
+    typeof timeSlot !== 'string' ||
+    !timeSlot.trim()
+  ) {
+    return fail(
+      res,
+      'A valid time slot is required'
+    );
+  }
+
+  const doctorUser = await User.findOne({
+    _id: doctorId,
+    role: 'doctor',
+    verificationStatus: 'verified'
+  });
+
   if (!doctorUser) {
-    return fail(res, 'Selected doctor is not available for booking', 404);
+    return fail(
+      res,
+      'Selected doctor is not available for booking',
+      404
+    );
   }
 
   const appointmentData = {
     patientId: req.user.id,
     doctorId,
-    date,
-    timeSlot,
-    reason: reason || ''
+    date: parsedDate,
+    timeSlot: timeSlot.trim(),
+    reason:
+      typeof reason === 'string'
+        ? reason.trim()
+        : ''
   };
 
   if (visitLocation === 'hospital') {
-    const doctorRecord = await Doctor.findOne({ userId: doctorId });
+    const doctorRecord = await Doctor.findOne({
+      userId: doctorId
+    });
+
     if (!doctorRecord?.hospitalId) {
-      return fail(res, 'This doctor is not currently affiliated with a hospital');
+      return fail(
+        res,
+        'This doctor is not currently affiliated with a hospital'
+      );
     }
+
     appointmentData.visitLocation = 'hospital';
-    appointmentData.hospitalId = doctorRecord.hospitalId;
+    appointmentData.hospitalId =
+      doctorRecord.hospitalId;
   }
 
-  const appointment = await Appointment.create(appointmentData);
+  try {
+    const appointment =
+      await Appointment.create(appointmentData);
 
-  return success(res, appointment, 201);
+    return success(res, appointment, 201);
+  } catch (err) {
+    if (err.code === 11000) {
+      return fail(
+        res,
+        'This time slot is already taken',
+        409
+      );
+    }
+
+    throw err;
+  }
 }
 
 async function listMine(req, res) {

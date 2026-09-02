@@ -19,4 +19,14 @@ const emergencyRequestSchema = new mongoose.Schema({
   resolvedAt: { type: Date, default: null }
 }, { timestamps: true });
 
+emergencyRequestSchema.index(
+  { patientId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: 'active'
+    }
+  }
+);
+
 module.exports = mongoose.model('EmergencyRequest', emergencyRequestSchema);

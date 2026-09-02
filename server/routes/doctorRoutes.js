@@ -1,5 +1,5 @@
 const express = require('express');
-const { protect, authorizeRoles } = require('../middleware/authMiddleware');
+const { protect, authorizeRoles, requireVerified } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 const { getProfile, updateProfile, addDegree, resubmitApplication, listMyPatients } = require('../controllers/doctorController');
 
@@ -18,6 +18,6 @@ router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 router.post('/degrees', addDegreeUpload, addDegree);
 router.put('/resubmit', resubmitUpload, resubmitApplication);
-router.get('/patients', listMyPatients);
+router.get('/patients', listMyPatients, requireVerified);
 
 module.exports = router;

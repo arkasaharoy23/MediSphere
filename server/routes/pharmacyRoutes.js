@@ -1,5 +1,5 @@
 const express = require('express');
-const { protect, authorizeRoles } = require('../middleware/authMiddleware');
+const { protect, authorizeRoles, requireVerified } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 const {
   getProfile,
@@ -22,10 +22,10 @@ router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
 
 router.get('/medicines', listMyMedicines);
-router.post('/medicines', addMedicine);
-router.put('/medicines/:id', updateMedicine);
-router.put('/medicines/:id/stock', updateStock);
-router.delete('/medicines/:id', deleteMedicine);
+router.post('/medicines', requireVerified, addMedicine);
+router.put('/medicines/:id', requireVerified, updateMedicine);
+router.put('/medicines/:id/stock', requireVerified, updateStock);
+router.delete('/medicines/:id', requireVerified, deleteMedicine);
 
 router.put('/resubmit', resubmitUpload, resubmitApplication);
 

@@ -185,19 +185,56 @@ async function reviewDegreeUpdate(req, res) {
 
 async function listUsers(req, res) {
   const { role, search } = req.query;
+
+  const page = Math.max(
+    Number.parseInt(req.query.page, 10) || 1,
+    1
+  );
+
+  const limit = Math.min(
+    Math.max(
+      Number.parseInt(req.query.limit, 10) || 20,
+      1
+    ),
+    100
+  );
+
   const query = {};
 
   if (role && role !== 'all') {
     query.role = role;
   }
 
-  if (search) {
-    query.email = { $regex: search, $options: 'i' };
+  if (
+    typeof search === 'string' &&
+    search.trim()
+  ) {
+    const escaped = search
+      .trim()
+      .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    query.email = {
+      $regex: escaped,
+      $options: 'i'
+    };
   }
 
-  const users = await User.find(query).sort({ createdAt: -1 });
+  const skip = (page - 1) * limit;
 
-  const results = users.map((user) => ({
+  const [users, total] = await Promise.all([
+    User.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .select(
+        '_id email role verificationStatus isActive createdAt'
+      )
+      .lean(),
+
+    User.countDocuments(query)
+  ]);
+
+  const results = users.map(user => ({
     userId: user._id,
     email: user.email,
     role: user.role,
@@ -206,7 +243,15 @@ async function listUsers(req, res) {
     createdAt: user.createdAt
   }));
 
-  return success(res, results);
+  return success(res, {
+    results,
+    pagination: {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit)
+    }
+  });
 }
 
 async function toggleUserActive(req, res) {

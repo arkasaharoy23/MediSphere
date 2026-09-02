@@ -1,5 +1,5 @@
 const express = require('express');
-const { protect, authorizeRoles } = require('../middleware/authMiddleware');
+const { protect, authorizeRoles, requireVerified } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 const {
   getProfile,
@@ -24,10 +24,10 @@ router.use(protect, authorizeRoles('ambulance'));
 
 router.get('/profile', getProfile);
 router.put('/profile', updateProfile);
-router.put('/location', updateLocation);
+router.put('/location', requireVerified, updateLocation);
 
 router.get('/requests', listAssignedRequests);
-router.put('/requests/:id/resolve', resolveRequest);
+router.put('/requests/:id/resolve', requireVerified, resolveRequest);
 
 router.put('/resubmit', resubmitUpload, resubmitApplication);
 

@@ -17,7 +17,7 @@ async function createPrescription(req, res) {
     }
   }
 
-  const hasRelationship = await Appointment.findOne({ doctorId: req.user.id, patientId });
+  const hasRelationship = await Appointment.findOne({ doctorId: req.user.id, patientId, status: { $in: ['confirmed', 'completed'] } });
   if (!hasRelationship) {
     return fail(res, 'You can only prescribe to patients you have an appointment history with', 403);
   }

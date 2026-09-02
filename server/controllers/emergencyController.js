@@ -42,7 +42,7 @@ async function findNearestHospital(lat, lng) {
 async function triggerSOS(req, res) {
   const { lat, lng, hospitalId } = req.body;
 
-  if (typeof lat !== 'number' || typeof lng !== 'number') {
+  if (typeof lat !== 'number' || typeof lng !== 'number' || !Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
     return fail(res, 'A valid location is required to trigger SOS');
   }
 
@@ -64,15 +64,30 @@ async function triggerSOS(req, res) {
 
   const resolvedAmbulanceId = await findNearestAmbulance(lat, lng);
 
-  const request = await EmergencyRequest.create({
-    patientId: req.user.id,
-    location: { lat, lng },
-    bloodGroup: profile?.bloodGroup || 'unknown',
-    emergencyContactName: profile?.emergencyContactName || '',
-    emergencyContactPhoneEncrypted: profile?.emergencyContactPhoneEncrypted || null,
-    ambulanceId: resolvedAmbulanceId,
-    hospitalId: resolvedHospitalId
+  let request;
+
+  try {
+    request = await EmergencyRequest.create({
+      patientId: req.user.id,
+      location: { lat, lng },
+      bloodGroup: profile?.bloodGroup || 'unknown',
+        emergencyContactName:
+      profile?.emergencyContactName || '',
+        emergencyContactPhoneEncrypted:
+      profile?.emergencyContactPhoneEncrypted || null,
+      ambulanceId: resolvedAmbulanceId,
+      hospitalId: resolvedHospitalId
   });
+  } catch (err) {
+    if (err.code === 11000) {
+      return fail(
+        res,
+        'You already have an active SOS request',409
+      );
+    }
+
+  throw err;
+}
 
   return success(res, {
     id: request._id,
@@ -82,28 +97,35 @@ async function triggerSOS(req, res) {
   }, 201);
 }
 
-async function enrichRequest(r) {
+async function enrichRequest(r, includeEmergencyPhone = false) {
   const [ambulanceRecord, hospitalRecord] = await Promise.all([
     r.ambulanceId ? Ambulance.findOne({ userId: r.ambulanceId }) : null,
     r.hospitalId ? Hospital.findOne({ userId: r.hospitalId }) : null
   ]);
 
-  return {
+  const result = {
     id: r._id,
     location: r.location,
     status: r.status,
     bloodGroup: r.bloodGroup,
     emergencyContactName: r.emergencyContactName,
-    emergencyContactPhone: r.emergencyContactPhoneEncrypted ? decrypt(r.emergencyContactPhoneEncrypted) : '',
-    ambulance: ambulanceRecord
-      ? { vehicleNumber: ambulanceRecord.vehicleNumber, driverName: ambulanceRecord.driverName, city: ambulanceRecord.city }
-      : null,
-    hospital: hospitalRecord
-      ? { hospitalName: hospitalRecord.hospitalName, address: hospitalRecord.address }
-      : null,
+    ambulance: ambulanceRecord? {
+        vehicleNumber: ambulanceRecord.vehicleNumber,
+        driverName: ambulanceRecord.driverName,
+        city: ambulanceRecord.city
+      }: null,
+    hospital: hospitalRecord? {
+        hospitalName: hospitalRecord.hospitalName,
+        address: hospitalRecord.address
+      }: null,
     createdAt: r.createdAt,
     resolvedAt: r.resolvedAt
   };
+
+  if (includeEmergencyPhone) {
+    result.emergencyContactPhone = r.emergencyContactPhoneEncrypted? decrypt(r.emergencyContactPhoneEncrypted): '';
+  }
+  return result;
 }
 
 async function listMine(req, res) {
@@ -141,7 +163,7 @@ async function listActive(req, res) {
   const results = await Promise.all(
     requests.map(async (r) => {
       const patientUser = await User.findById(r.patientId);
-      const base = await enrichRequest(r);
+      const base = await enrichRequest(r, false);
       return { ...base, patientEmail: patientUser?.email };
     })
   );

@@ -16,11 +16,43 @@ function encrypt(plainText) {
 }
 
 function decrypt(payload) {
-  const [ivHex, authTagHex, dataHex] = payload.split(':');
-  const decipher = crypto.createDecipheriv(ALGORITHM, getKey(), Buffer.from(ivHex, 'hex'));
-  decipher.setAuthTag(Buffer.from(authTagHex, 'hex'));
-  const decrypted = Buffer.concat([decipher.update(Buffer.from(dataHex, 'hex')), decipher.final()]);
-  return decrypted.toString('utf8');
+  if (
+    typeof payload !== 'string' ||
+    !payload.trim()
+  ) {
+    return '';
+  }
+
+  const parts = payload.split(':');
+
+  if (parts.length !== 3) {
+    return '';
+  }
+
+  const [ivHex, authTagHex, dataHex] = parts;
+
+  try {
+    const decipher = crypto.createDecipheriv(
+      ALGORITHM,
+      getKey(),
+      Buffer.from(ivHex, 'hex')
+    );
+
+    decipher.setAuthTag(
+      Buffer.from(authTagHex, 'hex')
+    );
+
+    const decrypted = Buffer.concat([
+      decipher.update(
+        Buffer.from(dataHex, 'hex')
+      ),
+      decipher.final()
+    ]);
+
+    return decrypted.toString('utf8');
+  } catch {
+    return '';
+  }
 }
 
 function hashForLookup(value) {
