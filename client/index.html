@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="../public/assets/images/logo.svg">
-<link rel="stylesheet" href="../client/css/style.css">
-<link rel="stylesheet" href="../client/css/pages/home.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/pages/home.css">
 </head>
 <body>
 
@@ -29,7 +29,7 @@
       <a href="#network">Network</a>
       <a href="#emergency">Emergency</a>
       <a href="#trust">Security</a>
-      <a href="../client/pages/auth/login.html">Log in</a>
+      <a href="auth/login.html">Log in</a>
     </nav>
 
     <div class="navbar__actions">
@@ -38,8 +38,8 @@
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
         </svg>
       </button>
-      <a href="../client/pages/auth/login.html" class="btn btn--ghost btn--sm">Log in</a>
-      <a href="../client/pages/auth/register.html" class="btn btn--primary btn--sm">Get started</a>
+      <a href="auth/login.html" class="btn btn--ghost btn--sm">Log in</a>
+      <a href="auth/register.html" class="btn btn--primary btn--sm">Get started</a>
       <button class="nav-toggle" data-nav-toggle aria-label="Open menu" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M4 6H20M4 12H20M4 18H20" stroke-linecap="round"/>
@@ -66,8 +66,8 @@
     </p>
 
     <div class="hero__ctas">
-      <a href="../client/pages/auth/register.html?role=patient" class="btn btn--primary">Get started as a patient</a>
-      <a href="../client/pages/auth/register.html?role=provider" class="btn btn--ghost">I'm a provider</a>
+      <a href="auth/register.html?role=patient" class="btn btn--primary">Get started as a patient</a>
+      <a href="auth/register.html?role=provider" class="btn btn--ghost">I'm a provider</a>
     </div>
 
     <div class="pulse" id="network">
@@ -113,7 +113,7 @@
         </div>
         <h3>Patient</h3>
         <p>Book appointments, view medical history, and trigger an emergency SOS in one tap.</p>
-        <a class="role-card__link" href="../client/pages/auth/register.html?role=patient">Join as a patient
+        <a class="role-card__link" href="auth/register.html?role=patient">Join as a patient
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </article>
@@ -127,7 +127,7 @@
         </div>
         <h3>Doctor</h3>
         <p>Manage availability, review patient history, and issue prescriptions from anywhere.</p>
-        <a class="role-card__link" href="../client/pages/auth/register.html?role=doctor">Join as a doctor
+        <a class="role-card__link" href="auth/register.html?role=doctor">Join as a doctor
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </article>
@@ -142,7 +142,7 @@
         </div>
         <h3>Hospital</h3>
         <p>Coordinate departments, doctors, bed availability, and incoming emergency cases.</p>
-        <a class="role-card__link" href="../client/pages/auth/register.html?role=hospital">Register a hospital
+        <a class="role-card__link" href="auth/register.html?role=hospital">Register a hospital
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </article>
@@ -156,7 +156,7 @@
         </div>
         <h3>Diagnostic Lab</h3>
         <p>Take test bookings, upload reports, and keep a searchable history for every patient.</p>
-        <a class="role-card__link" href="../client/pages/auth/register.html?role=lab">Register a lab
+        <a class="role-card__link" href="auth/register.html?role=lab">Register a lab
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </article>
@@ -170,7 +170,7 @@
         </div>
         <h3>Pharmacy</h3>
         <p>Track medicine inventory, fulfill orders, and give patients live order status.</p>
-        <a class="role-card__link" href="../client/pages/auth/register.html?role=pharmacy">Register a pharmacy
+        <a class="role-card__link" href="auth/register.html?role=pharmacy">Register a pharmacy
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </article>
@@ -187,7 +187,7 @@
         </div>
         <h3>Ambulance</h3>
         <p>Receive emergency requests, share live location, and update availability in real time.</p>
-        <a class="role-card__link" href="../client/pages/auth/register.html?role=ambulance">Register a fleet
+        <a class="role-card__link" href="auth/register.html?role=ambulance">Register a fleet
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12H19M13 6L19 12L13 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </article>
@@ -214,7 +214,7 @@
             Your key medical history follows you to the responding team.
           </li>
         </ul>
-        <a href="../client/pages/auth/register.html?role=patient" class="btn btn--coral">Set up my SOS profile</a>
+        <a href="auth/register.html?role=patient" class="btn btn--coral">Set up my SOS profile</a>
       </div>
 
       <div class="emergency__panel">
@@ -276,8 +276,8 @@
       <h2>Bring your care team onto one line.</h2>
       <p>Whether you're a patient, a solo practitioner, or a full hospital network, MediSphere scales to fit.</p>
       <div class="hero__ctas">
-        <a href="../client/pages/auth/register.html" class="btn btn--primary">Create your account</a>
-        <a href="../client/pages/auth/login.html" class="btn btn--on-navy">I already have one</a>
+        <a href="auth/register.html" class="btn btn--primary">Create your account</a>
+        <a href="auth/login.html" class="btn btn--on-navy">I already have one</a>
       </div>
     </div>
   </section>
@@ -301,18 +301,18 @@
     <div class="footer__col">
       <h4>Patients</h4>
       <ul>
-        <li><a href="../client/pages/auth/register.html?role=patient">Create account</a></li>
-        <li><a href="../client/pages/patient/appointments.html">Book appointment</a></li>
-        <li><a href="../client/pages/patient/emergency.html">Emergency SOS</a></li>
+        <li><a href="auth/register.html?role=patient">Create account</a></li>
+        <li><a href="patient/appointments.html">Book appointment</a></li>
+        <li><a href="patient/emergency.html">Emergency SOS</a></li>
       </ul>
     </div>
 
     <div class="footer__col">
       <h4>Providers</h4>
       <ul>
-        <li><a href="../client/pages/auth/register.html?role=doctor">Join as a doctor</a></li>
-        <li><a href="../client/pages/auth/register.html?role=hospital">Register a hospital</a></li>
-        <li><a href="../client/pages/auth/register.html?role=lab">Register a lab</a></li>
+        <li><a href="auth/register.html?role=doctor">Join as a doctor</a></li>
+        <li><a href="auth/register.html?role=hospital">Register a hospital</a></li>
+        <li><a href="auth/register.html?role=lab">Register a lab</a></li>
       </ul>
     </div>
 
@@ -321,7 +321,7 @@
       <ul>
         <li><a href="#trust">Security</a></li>
         <li><a href="#emergency">Emergency response</a></li>
-        <li><a href="../client/pages/auth/login.html">Log in</a></li>
+        <li><a href="auth/login.html">Log in</a></li>
       </ul>
     </div>
   </div>
@@ -332,6 +332,6 @@
   </div>
 </footer>
 
-<script type="module" src="../client/js/main.js"></script>
+<script type="module" src="../js/main.js"></script>
 </body>
 </html>
