@@ -22,7 +22,7 @@ module.exports = {
     apiKey: process.env.RESEND_API_KEY,
     fromEmail: process.env.RESEND_FROM_EMAIL || 'MediSphere <onboarding@resend.dev>'
   },
-  clientUrls: (process.env.CLIENT_URL || 'http://localhost:5500,http://127.0.0.1:5500')
+  clientUrls: (process.env.CLIENT_URL || 'http://localhost:5500,http://127.0.0.1:5500,https://medisphere-qtdv.onrender.com')
     .split(',')
     .map((url) => url.trim())
 };
