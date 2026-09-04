@@ -26,7 +26,7 @@ app.use(cors({
   origin: [
     'http://localhost:5500',
     'http://127.0.0.1:5500',
-    'https://medisphere-frontend-4yqw.onrender.com'
+    'https://medisphere-frontend-cbcg.onrender.com'
   ],
   credentials: true
 }));
