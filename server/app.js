@@ -23,12 +23,12 @@ const app = express();
 
 app.use(helmet());
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || config.clientUrls.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error('Not allowed by CORS'));
-  }
+  origin: [
+    'http://localhost:5500',
+    'http://127.0.0.1:5500',
+    'https://medisphere-frontend-4yqw.onrender.com'
+  ],
+  credentials: true
 }));
 app.use(express.json());
 
